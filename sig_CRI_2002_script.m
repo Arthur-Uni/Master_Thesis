@@ -13,7 +13,7 @@ xn = -4:0.01:0;
 
 width = 1;
 
-
+%CRI interpolation starting functions
 g = 0.5.*(1 + 0.5.* xp);
 h = 1;
 

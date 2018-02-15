@@ -10,6 +10,7 @@ x = -1:0.01:1;
 
 %plot parameters
 width = 1;
+fontsize = 12;
 
 %Chebyshev polynomials
 syms x_cheb;
@@ -31,7 +32,7 @@ error = abs(y - y_approx);
 max_error = max(error);
 
 %relative error
-rel_error = error./y;
+rel_error = abs(error./y);
 
 %%
 %plots
@@ -43,16 +44,19 @@ legend('tanh','approx')
 grid on;
 grid minor;
 title('3rd order chebyshev interpolation');
+set(gca,'FontSize',fontsize);
 
 subplot(3,1,2);
 plot(x,error,'linewidth', width);
 grid on;
 grid minor;
 title('absolute error');
+set(gca,'FontSize',fontsize);
 
 subplot(3,1,3);
 plot(x,rel_error,'linewidth', width);
 grid on;
 grid minor;
 title('relative error');
+set(gca,'FontSize',fontsize);
 %% 

@@ -4,9 +4,9 @@ clear;
 clc;
 
 %initialization
-a = 0; %interval left
-b = 4; %interval right
-n = 4; %degree of chebyshev polynomial
+a = -1; %interval left
+b = 1; %interval right
+n = 3; %degree of chebyshev polynomial
 c=-1;
 d=1;
 x=linspace(a,b,fix(b-a)*20);

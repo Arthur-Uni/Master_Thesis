@@ -4,40 +4,50 @@ clc;
 close all;
 
 %interval [a,b]
-a = 0;
-b = 2;
+a = -1;
+b = 1;
 %degree of polynomial
 n = 3;
 
-%nodes to plot
+%plotting parameters
+width = 1;
+%points to plot
 dots = a:0.01:b;
 
-%calculate chebyshev nodes
-k=(0:n);
-x_k = cos((2*k+1)*pi/(2*(n+1)));
+%function to approximate and Chebyshev polynomial approximation
+y = tanh(dots);
+p = cheb_poly_approx(a, b, n);
 
-%adjust chebyshev nodes for arbitrary interval
-x_ks = 0.5.*(a-b).*x_k + 0.5 .* (a+b);
+%absolute error
+error = abs(y-p);
+max_error = max(error);
+mean_error = mean(error);
 
-%calculate function nodes at x_ks
-fnodes = tanh(x_ks);
+%relative error
+rel_error = error./y;
 
-%build T_k(x) for adjusted interval
-syms x;
-x = (2*x-(a+b))/(b-a);
-T_ks = chebyshevT(k, x);
-
-%calculate chebyshev coefficients
-c = (0:n);
-c(1) = sum(fnodes)/(n+1);
-for i=2:(n+1)
-c(i) = (2/(n+1)) * sum(fnodes .* subs(T_ks(i), x_ks));
-end
-
-p_sym = sum(c .* T_ks);
-
-p_cheb_approx = subs(p_sym, dots);
-
+%plot
 hold on;
-plot(dots, tanh(dots));
-plot(dots, p_cheb_approx);
+plot(dots, y);
+plot(dots, p);
+
+%plot
+figure(1);
+subplot(3,1,1);
+plot(dots,y, dots,p, 'linewidth', width);
+legend('tanh','Chebyshev polynomial approximation')
+grid on;
+grid minor;
+title('Chebyshev Polynomial Approximation');
+
+subplot(3,1,2);
+plot(dots,error,'linewidth', width);
+grid on;
+grid minor;
+title('absolute error');
+
+subplot(3,1,3);
+plot(dots,rel_error,'linewidth', width);
+grid on;
+grid minor;
+title('relative error');

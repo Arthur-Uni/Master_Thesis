@@ -22,7 +22,7 @@ mean_squ_error = zeros(1,10);
 C = zeros(1,10);    %number of coefficients
 
 for n=1:10
-    p = cheb_poly_approx(a, b, n);
+    p = cheb_poly_approx(a, b, n, 0);
     abs_error = max(abs(y-p));
     max_abs_error(n) = abs_error;
     mean_squ_error(n) = immse(double(y), double(p));

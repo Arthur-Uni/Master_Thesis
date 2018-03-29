@@ -1,4 +1,4 @@
-function [ y ] = cheb_poly_approx( a, b, n )
+function [ y ] = cheb_poly_approx( a, b, n, q_en, mode, wordlength, var)
 %Chebyshev polynomial approximation of tanh(x)
 
 %  Parameters:
@@ -6,6 +6,8 @@ function [ y ] = cheb_poly_approx( a, b, n )
 %    Input, real a, b, the domain of definition.
 %
 %    Input, integer n, the order of the polynomial
+%
+%    Input, boolean q_en, enable quantization
 %
 %    Output, vector y, the Chebyshev polynomial approximation for vector x
 
@@ -34,10 +36,15 @@ for i=2:(n+1)
 c(i) = (2/(n+1)) * sum(fnodes .* subs(T_ks(i), x_ks));
 end
 
+if(q_en)
+    c = cheb_quantize(c, mode, wordlength, var);
+end
+
 %calculate polynomial approximation with variable x
 p_sym = sum(c .* T_ks);
 
 %substitute variable x with interval values
 y = subs(p_sym, dots);
+
 end
 

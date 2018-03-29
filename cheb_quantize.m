@@ -12,7 +12,7 @@ function [ y ] = cheb_quantize( x, mode, wordlength, var)
      	  q_fi = quantizer('mode', 'fixed', 'roundmode', 'Round', 'overflowmode', 'saturate', 'format', [wordlength var]);
         y = quantize(q_fi, x);
      case 2  %floating point: var is length of exponent in this case
-           q_fl = quantizer('mode', 'float', 'roundmode', 'ceil', 'format', [word_length var]);
+           q_fl = quantizer('mode', 'float', 'roundmode', 'ceil', 'format', [wordlength var]);
             y = quantize(q_fl, x);
         otherwise
             y = x;

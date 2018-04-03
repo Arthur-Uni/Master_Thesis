@@ -47,45 +47,75 @@ y7 = tanh(dots7);
 y8 = tanh(dots8);
 y = [y1, y2, y3, y4, y5, y6, y7, y8];
 
-max_abs_error = zeros(1,10);
-mean_squ_error = zeros(1,10);
-C = zeros(1,10);    %number of coefficients
-
-hold on;
-grid on;
-grid minor;
+max_abs_error = zeros(10,15);
+mean_squ_error = zeros(10,15);
+C = zeros(10,15);
+N = zeros(10,15);
+mode = 1;
 
 for n=1:10
-    p1 = cheb_poly_approx(a1, b1, n);
-    p2 = cheb_poly_approx(a2, b2, n);
-    p3 = cheb_poly_approx(a3, b3, n);
-    p4 = cheb_poly_approx(a4, b4, n);
-    p5 = cheb_poly_approx(a5, b5, n);
-    p6 = cheb_poly_approx(a6, b6, n);
-    p7 = cheb_poly_approx(a7, b7, n);
-    p8 = cheb_poly_approx(a8, b8, n);
-    p = [p1, p2, p3, p4, p5, p6, p7, p8];
-    abs_error = max(abs(y-p));
-    max_abs_error(n) = abs_error;
-    mean_squ_error(n) = immse(double(y), double(p));
-    C(n) = (n+1)*S;
+    for wordlength = 4:2:32
+        i = 0.5*wordlength - 1;
+        var = wordlength - 2;
+        p1 = cheb_poly_approx(a1, b1, n, 1, mode, wordlength, var);
+        p2 = cheb_poly_approx(a2, b2, n, 1, mode, wordlength, var);
+        p3 = cheb_poly_approx(a3, b3, n, 1, mode, wordlength, var);
+        p4 = cheb_poly_approx(a4, b4, n, 1, mode, wordlength, var);
+        p5 = cheb_poly_approx(a5, b5, n, 1, mode, wordlength, var);
+        p6 = cheb_poly_approx(a6, b6, n, 1, mode, wordlength, var);
+        p7 = cheb_poly_approx(a7, b7, n, 1, mode, wordlength, var);
+        p8 = cheb_poly_approx(a8, b8, n, 1, mode, wordlength, var);
+        p = [p1, p2, p3, p4, p5, p6, p7, p8];
+        abs_error = max(abs(y-p));
+        max_abs_error(n ,i) = abs_error;
+        mean_squ_error(n, i) = immse(double(y), double(p));
+        C(n, i) = (n+1)*S;
+        N(n, i) = C(n)*wordlength;
+        i = i+1;
+    end
 end
 
-figure(1);
+best_abs_error = zeros(10,1);
+best_mse = zeros(10,1);
+
+for i=1:10
+    best_abs_error(i,1) = min(max_abs_error(i,1:end));
+    best_mse (i,1) = min(mean_squ_error(i,1:end));
+end
+
+for i=1:10
+    figure(1);
+    subplot(2,1,1);
+    plot(N(i,1:15), max_abs_error(i,1:15), 'linewidth', width);
+    xlabel('# of memory bits');
+    ylabel('max abs error');
+    hold on;
+    grid on;
+    grid minor;
+
+    subplot(2,1,2);
+    plot(N(i,1:15), mean_squ_error(i,1:15), 'linewidth', width);
+    xlabel('# of memory bits');
+    ylabel('mean squared error');
+    hold on;
+    grid on
+    grid minor; 
+end
+
+figure(2)
+
 subplot(2,1,1);
-plot(C, max_abs_error, 'linewidth', width);
-xlabel('degree n of polynomial');
+plot(N, max_abs_error, 'linewidth', width);
+xlabel('# of memory bits');
 ylabel('max abs error');
-legend('N = 8');
 hold on;
 grid on;
 grid minor;
 
 subplot(2,1,2);
-plot(C, mean_squ_error, 'linewidth', width);
-xlabel('degree n of polynomial');
+plot(N, mean_squ_error, 'linewidth', width);
+xlabel('# of memory bits');
 ylabel('mean squared error');
-legend('N = 8');
 hold on;
-grid on;
+grid on
 grid minor;

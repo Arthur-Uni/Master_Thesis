@@ -38,6 +38,7 @@ end
 
 if(q_en)
     c = cheb_quantize(c, mode, wordlength, var);
+    %dots = cheb_quantize(dots, mode, wordlength, var);
 end
 
 %calculate polynomial approximation with variable x

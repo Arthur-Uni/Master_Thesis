@@ -64,8 +64,9 @@ hold on;
 figure(1);
 
 %all in one
-plot(x,t, 'linewidth', width1);
-plot(x,y_sig, x,y_cheb, 'linewidth', width2);
+tan = plot(x,t, 'linewidth', width1);
+sig_approx = plot(x,y_sig, 'linewidth', width2);
+cheb_approx = plot(x, y_cheb, 'linewidth', width2);
 legend('tanh(x)','S(x)', 'C(x)');
 
 %tanh and shift

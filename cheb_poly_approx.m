@@ -12,7 +12,7 @@ function [ y ] = cheb_poly_approx( a, b, n, q_en, mode, wordlength, var)
 %    Output, vector y, the Chebyshev polynomial approximation for vector x
 
 %nodes to plot
-dots = a:0.01:b;
+dots = linspace(a,b);
 
 %calculate chebyshev nodes
 k=(0:n);

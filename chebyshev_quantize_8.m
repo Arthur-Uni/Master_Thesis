@@ -27,14 +27,14 @@ S = 8;   %number of segments
 %plotting parameters
 width = 1;
 %points to plot
-dots1 = a1:0.01:b1;
-dots2 = a2:0.01:b2;
-dots3 = a3:0.01:b3;
-dots4 = a4:0.01:b4;
-dots5 = a5:0.01:b5;
-dots6 = a6:0.01:b6;
-dots7 = a7:0.01:b7;
-dots8 = a8:0.01:b8;
+dots1 = linspace(a1,b1);
+dots2 = linspace(a2,b2);
+dots3 = linspace(a3,b3);
+dots4 = linspace(a4,b4);
+dots5 = linspace(a5,b5);
+dots6 = linspace(a6,b6);
+dots7 = linspace(a7,b7);
+dots8 = linspace(a8,b8);
 
 %function to approximate and Chebyshev polynomial approximation
 y1 = tanh(dots1);
@@ -47,14 +47,23 @@ y7 = tanh(dots7);
 y8 = tanh(dots8);
 y = [y1, y2, y3, y4, y5, y6, y7, y8];
 
-max_abs_error = zeros(10,15);
-mean_squ_error = zeros(10,15);
-C = zeros(10,15);
-N = zeros(10,15);
+max_degree = 10;
+min_degree = 1;
+degree_size = max_degree - min_degree +1;       %number of degree steps
+
+min_word = 4;
+max_word = 32;
+word_size = ((max_word-min_word)/2) + 1;        %number of word steps
+step_size = 2;
+
+max_abs_error = zeros(degree_size,word_size);
+mean_squ_error = zeros(degree_size,word_size);
+C = zeros(degree_size,word_size);                                    %number of coefficients
+N = zeros(degree_size,word_size);                                    %memory utilization
 mode = 1;
 
-for n=1:10
-    for wordlength = 4:2:32
+for n=min_degree:max_degree
+    for wordlength = min_word:step_size:max_word
         i = 0.5*wordlength - 1;
         var = wordlength - 2;
         p1 = cheb_poly_approx(a1, b1, n, 1, mode, wordlength, var);
@@ -75,10 +84,10 @@ for n=1:10
     end
 end
 
-best_abs_error = zeros(10,1);
-best_mse = zeros(10,1);
+best_abs_error = zeros(degree_size,1);
+best_mse = zeros(degree_size,1);
 
-for i=1:10
+for i=1:degree_size
     best_abs_error(i,1) = min(max_abs_error(i,1:end));
     best_mse (i,1) = min(mean_squ_error(i,1:end));
 end
@@ -86,7 +95,7 @@ end
 for i=1:10
     figure(1);
     subplot(2,1,1);
-    plot(N(i,1:15), max_abs_error(i,1:15), 'linewidth', width);
+    plot(N(i,1:word_size), max_abs_error(i,1:word_size), 'linewidth', width);
     xlabel('# of memory bits');
     ylabel('max abs error');
     hold on;
@@ -94,7 +103,7 @@ for i=1:10
     grid minor;
 
     subplot(2,1,2);
-    plot(N(i,1:15), mean_squ_error(i,1:15), 'linewidth', width);
+    plot(N(i,1:word_size), mean_squ_error(i,1:word_size), 'linewidth', width);
     xlabel('# of memory bits');
     ylabel('mean squared error');
     hold on;

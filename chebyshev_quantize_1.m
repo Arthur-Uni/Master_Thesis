@@ -12,7 +12,7 @@ S = 1;                                                  %number of segments
 %plotting parameters
 width = 1;
 %points to plot
-dots = a:0.01:b;
+dots = linspace(a,b);
 
 %function to approximate and Chebyshev polynomial approximation
 y = tanh(dots);

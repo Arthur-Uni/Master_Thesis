@@ -1,7 +1,7 @@
-% %cleanup
-% clear;
-% clc;
-% close all;
+%cleanup
+clear;
+clc;
+close all;
 
 %interval [a,b]
 a1 = 0;
@@ -15,25 +15,30 @@ S = 2; %number of segments
 %plotting parameters
 width = 1;
 %points to plot
-dots1 = a1:0.01:b1;
-dots2 = a2:0.01:b2;
+dots1 = linspace(a1, b1);
+dots2 = linspace(a2, b2);
 
 %function to approximate and Chebyshev polynomial approximation
 y1 = tanh(dots1);
 y2 = tanh(dots2);
 y = [y1, y2];
 
-max_abs_error = zeros(1,10);
-mean_squ_error = zeros(1,10);
-C = zeros(1,10);
+%parameters
+max_degree = 10;
+min_degree = 1;
+degree_size = max_degree - min_degree +1;       %number of degree steps
+
+max_abs_error = zeros(1,max_degree);
+mean_squ_error = zeros(1,max_degree);
+C = zeros(1,max_degree);
 
 hold on;
 grid on;
 grid minor;
 
-for n=1:10
-    p1 = cheb_poly_approx(a1, b1, n);
-    p2 = cheb_poly_approx(a2, b2, n);
+for n=min_degree:max_degree
+    p1 = cheb_poly_approx(a1, b1, n, 0,0,0,0);
+    p2 = cheb_poly_approx(a2, b2, n, 0,0,0,0);
     p = [p1, p2];
     abs_error = max(abs(y-p));
     max_abs_error(n) = abs_error;

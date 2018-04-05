@@ -12,7 +12,7 @@ S = 1;                                                  %number of segments
 %plotting parameters
 width = 1;
 %points to plot
-dots = a:0.01:b;
+dots = linspace(a, b);
 
 %function to approximate and Chebyshev polynomial approximation
 y = tanh(dots);
@@ -31,10 +31,6 @@ mean_squ_error = zeros(degree_size,word_size);
 C = zeros(degree_size,word_size);                                    %number of coefficients
 N = zeros(degree_size,word_size);                                    %memory utilization
 
-% max_abs_error = zeros(8,2);
-% mean_squ_error = zeros(8,2);
-% C = zeros(8,2);                                    %number of coefficients
-% N = zeros(8,2);                                    %memory utilization
 mode = 1;                              %1 = fixed point, 2 = floating point
 
 for n=min_degree:max_degree

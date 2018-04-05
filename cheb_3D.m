@@ -25,21 +25,33 @@ dots2 = a2:0.01:b2;
 dots3 = a3:0.01:b3;
 dots4 = a4:0.01:b4;
 
-%function to approximate and Chebyshev polynomial approximation
+%function to approximate
 y1 = tanh(dots1);
 y2 = tanh(dots2);
 y3 = tanh(dots3);
 y4 = tanh(dots4);
 y = [y1, y2, y3, y4];
 
-max_abs_error = zeros(10,15);
-mean_squ_error = zeros(10,15);
-C = zeros(10,15);
-N = zeros(10,15);
+%parameters
+max_degree = 10;
+min_degree = 1;
+degree_size = max_degree - min_degree +1;       %number of degree steps
+
+min_word = 4;
+max_word = 32;
+word_size = ((max_word-min_word)/2) + 1;        %number of word steps
+step_size = 2;
+
+max_abs_error = zeros(degree_size,word_size);
+mean_squ_error = zeros(degree_size,word_size);
+C = zeros(degree_size,word_size);               %number of coefficients
+N = zeros(degree_size,word_size);               %memory utilization
+
 mode = 1;
 
+%chebyshev approximations
 for n=1:10
-    for wordlength=4:2:32
+    for wordlength=min_word:step_size:max_word
         i = 0.5*wordlength - 1;
         var = wordlength - 2;
         p1 = cheb_poly_approx(a1, b1, n, 1, mode, wordlength, var);
@@ -56,13 +68,9 @@ for n=1:10
     end
 end
 
+%plot
 figure(1)
-
-subplot(2,1,1);
-s = surf(N,1:10, max_abs_error, log(max_abs_error));
-xlabel('memory utilization');
-ylabel('computational effort');
+s = surf(N,min_degree:max_degree, max_abs_error, log(max_abs_error));
+xlabel('memory utilization in number of bits');
+ylabel('computational effort in degree of polynomial');
 zlabel('max absolute error');
-hold on;
-grid on;
-grid minor;

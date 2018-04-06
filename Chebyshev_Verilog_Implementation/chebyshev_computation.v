@@ -38,5 +38,6 @@ always @(posedge clock or negedge resetn)
             coeff_buffer <= coeff_in;
             coeff_buffer <= coeff;
          end
+   end
 
 endmodule

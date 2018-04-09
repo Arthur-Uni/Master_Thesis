@@ -20,10 +20,10 @@ S = 4; %number of segments
 %plotting parameters
 width = 1.5;
 %points to plot
-dots1 = a1:0.01:b1;
-dots2 = a2:0.01:b2;
-dots3 = a3:0.01:b3;
-dots4 = a4:0.01:b4;
+dots1 = linspace(a1,b1);
+dots2 = linspace(a2,b2);
+dots3 = linspace(a3,b3);
+dots4 = linspace(a4,b4);
 
 %function to approximate
 y1 = tanh(dots1);

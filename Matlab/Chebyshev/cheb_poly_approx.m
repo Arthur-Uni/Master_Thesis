@@ -12,7 +12,8 @@ function [ y ] = cheb_poly_approx( a, b, n, q_en, mode, wordlength, var)
 %    Output, vector y, the Chebyshev polynomial approximation for vector x
 
 %nodes to plot
-dots = linspace(a,b);
+%dots = linspace(a,b);
+dots_dash = linspace(-1,1);
 
 %calculate chebyshev nodes
 k=(0:n);
@@ -26,8 +27,10 @@ fnodes = tanh(x_ks);
 
 %build T_k(x) for adjusted interval
 syms x;
+syms x_dash;
 x = (2*x-(a+b))/(b-a);
 T_ks = chebyshevT(k, x);
+x_dash = (x_dash*(b-a)+(a+b))*0.5;
 
 %calculate chebyshev coefficients
 c = (0:n);
@@ -36,16 +39,30 @@ for i=2:(n+1)
 c(i) = (2/(n+1)) * sum(fnodes .* subs(T_ks(i), x_ks));
 end
 
+%make sure really small c's are zero
+e = 1e-9;
+for i=1:(n+1)
+    if(sign(c(i))*c(i) <= e)
+        c(i) = 0;
+    end
+end
+
+%quantization
 if(q_en)
     c = cheb_quantize(c, mode, wordlength, var);
     %dots = cheb_quantize(dots, mode, wordlength, var);
 end
 
-%calculate polynomial approximation with variable x
-p_sym = sum(c .* T_ks);
+%%calculate polynomial approximation with variable x
+%p_sym = sum(c .* T_ks);
+
+%calculate polynomial approximation for normalized x -> [a,b] = x_dash -> [-1,1]
+p_sym = sum(c .* subs(T_ks, x_dash));
+
 
 %substitute variable x with interval values
-y = subs(p_sym, dots);
+y = subs(p_sym, dots_dash);
+%y = subs(p_sym, dots);
 
 end
 

@@ -1,4 +1,4 @@
-function [ y] = cheb_poly_approx( a, b, n, q_en, mode, wordlength, var)
+function [ c_poly ] = cheb_poly_coeffs( a, b, n, q_en, mode, wordlength, var)
 %Chebyshev polynomial approximation of tanh(x)
 
 %  Parameters:
@@ -9,11 +9,7 @@ function [ y] = cheb_poly_approx( a, b, n, q_en, mode, wordlength, var)
 %
 %    Input, boolean q_en, enable quantization
 %
-%    Output, vector y, the Chebyshev polynomial approximation for vector x
-
-%nodes to plot
-%dots = linspace(a,b);
-dots = linspace(-1,1);
+%    Output, vector c_poly, final polynomial coefficients
 
 %calculate chebyshev nodes
 k=(0:n);
@@ -27,7 +23,7 @@ fnodes = tanh(x_ks);
 
 %build T_k(x) for adjusted interval
 syms x real;
-%x2 = (2*x1-(a+b))/(b-a); %from x1:[a,b] -> x2:[-1,1]
+%interval transformation: x2 = (2*x1-(a+b))/(b-a); %from x1:[a,b] -> x2:[-1,1]
 T_ks = chebyshevT(k, (2*x-(a+b))/(b-a));
 
 %calculate chebyshev coefficients
@@ -45,22 +41,24 @@ for i=1:(n+1)
     end
 end
 
-%quantization
-if(q_en)
-    c = cheb_quantize(c, mode, wordlength, var);
-    %dots = cheb_quantize(dots, mode, wordlength, var);
-end
-
-%%calculate polynomial approximation with variable x
-%p_sym = sum(c .* T_ks);
-
 %calculate polynomial approximation for: x2 = (x1*(b-a)+(a+b))*0.5; %from x1:[-1,1] -> x2:[a,b]
 p_sym = sum(c .* subs(T_ks, ((x*(b-a)+(a+b))*0.5)));
 p_sym = expand(p_sym);
+h = horner(p_sym);
 
-%substitute variable x with interval values
-y = subs(p_sym, dots); % calculated for normalized inputs!!
-y = double(y);
-%y = subs(p_sym, dots);
+c_poly_temp = coeffs(h, 'All');
+
+%quantization
+if(q_en)
+    c_poly = cheb_quantize(c_poly_temp, mode, wordlength, var);
+    c_poly = fliplr(c_poly); %flip vector so that c_poly = [c0,c1,...,cn]
+    c_poly = double(c_poly);
+    %dots = cheb_quantize(dots, mode, wordlength, var);
+else
+    c_poly = c_poly_temp;
+    c_poly = fliplr(c_poly); %flip vector so that c_poly = [c0,c1,...,cn]
+    c_poly = double(c_poly);
+end
 
 end
+

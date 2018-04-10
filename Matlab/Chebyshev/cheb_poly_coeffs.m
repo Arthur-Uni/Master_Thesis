@@ -9,6 +9,12 @@ function [ c_poly ] = cheb_poly_coeffs( a, b, n, q_en, mode, wordlength, var)
 %
 %    Input, boolean q_en, enable quantization
 %
+%    Input, integer mode, quantization mode: 1 = fixed point, 2 = floating point
+%
+%    Input, integer wordlength
+%
+%    Input, integer var
+%
 %    Output, vector c_poly, final polynomial coefficients
 
 %calculate chebyshev nodes
@@ -51,13 +57,10 @@ c_poly_temp = coeffs(h, 'All');
 %quantization
 if(q_en)
     c_poly = cheb_quantize(c_poly_temp, mode, wordlength, var);
-    c_poly = fliplr(c_poly); %flip vector so that c_poly = [c0,c1,...,cn]
-    c_poly = double(c_poly);
-    %dots = cheb_quantize(dots, mode, wordlength, var);
+    c_poly = double(c_poly); %format: [cn,...,c0]
 else
     c_poly = c_poly_temp;
-    c_poly = fliplr(c_poly); %flip vector so that c_poly = [c0,c1,...,cn]
-    c_poly = double(c_poly);
+    c_poly = double(c_poly); %format: [cn,...,c0]
 end
 
 end

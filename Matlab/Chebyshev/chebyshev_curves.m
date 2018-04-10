@@ -1,7 +1,7 @@
 %cleanup
-%clear;
-%clc;
-%close all;
+clear;
+clc;
+close all;
 
 %%
 %initialization parameters
@@ -41,10 +41,10 @@ end
 %%
 %function to approximate(tanh in this case)
 
-y = zeros(S,pts);
+Y = zeros(S,pts);
 for i=1:S
     x = linspace(AB(i,1), AB(i,2),pts);
-    y(i,1:pts) = tanh(x);
+    Y(i,1:pts) = tanh(x);
 end
 
 %%
@@ -60,7 +60,7 @@ C = zeros(1,degree_size);                       %number of coefficients
 P = zeros(S,pts);                               %matrix storing polynomial approximation values
                                                 %calculated for each
                                                 %segment
-
+                                                
 %%
 %sweep over degree of polynomial approximation and calculate
 %maximum absolute error, mean square error over interval [a,b] and number
@@ -70,9 +70,9 @@ for n=min_degree:max_degree
     for i=1:S
         P(i,1:pts) = cheb_horner(AB(i,1), AB(i,2), n, 0, 0, 0, 0);
     end
-    abs_error = max(abs(y(:)-P(:)));
+    abs_error = max(abs(Y(:)-P(:)));
     Max_abs_error(n) = abs_error;
-    Mean_squ_error(n) = immse(double(y), double(P));
+    Mean_squ_error(n) = immse(double(Y), double(P));
     C(n) = (n+1)*S;
 end
 

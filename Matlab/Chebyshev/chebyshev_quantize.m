@@ -10,7 +10,7 @@
 %n = 3;
 
 %number of segments
-S = 2;
+S = 4;
 
 %number of points for linspace function
 pts = 100;
@@ -85,46 +85,53 @@ for n=min_degree:max_degree
     end
 end
 
-best_abs_error = zeros(degree_size,1);
-best_mse = zeros(degree_size,1);
-for i=1:degree_size
-    best_abs_error(i,1) = min(max_abs_error(i,1:end));
-    best_mse (i,1) = min(mean_squ_error(i,1:end));
-end
+% best_abs_error = zeros(degree_size,1);
+% best_mse = zeros(degree_size,1);
+% for i=1:degree_size
+%     best_abs_error(i,1) = min(max_abs_error(i,1:end));
+%     best_mse (i,1) = min(mean_squ_error(i,1:end));
+% end
+% 
+% for i=1:max_degree
+%     figure(1);
+%     subplot(2,1,1);
+%     plot(N(i,1:degree_size), max_abs_error(i,1:degree_size), 'linewidth', width);
+%     xlabel('# of memory bits');
+%     ylabel('max abs error');
+%     hold on;
+%     grid on;
+%     grid minor;
+% 
+%     subplot(2,1,2);
+%     plot(N(i,1:degree_size), mean_squ_error(i,1:degree_size), 'linewidth', width);
+%     xlabel('# of memory bits');
+%     ylabel('mean squared error');
+%     hold on;
+%     grid on
+%     grid minor; 
+% end
+% 
+% figure(2)
+% 
+% subplot(2,1,1);
+% plot(N, max_abs_error, 'linewidth', width);
+% xlabel('# of memory bits');
+% ylabel('max abs error');
+% hold on;
+% grid on;
+% grid minor;
+% 
+% subplot(2,1,2);
+% plot(N, mean_squ_error, 'linewidth', width);
+% xlabel('# of memory bits');
+% ylabel('mean squared error');
+% hold on;
+% grid on
+% grid minor;
 
-for i=1:max_degree
-    figure(1);
-    subplot(2,1,1);
-    plot(N(i,1:degree_size), max_abs_error(i,1:degree_size), 'linewidth', width);
-    xlabel('# of memory bits');
-    ylabel('max abs error');
-    hold on;
-    grid on;
-    grid minor;
-
-    subplot(2,1,2);
-    plot(N(i,1:degree_size), mean_squ_error(i,1:degree_size), 'linewidth', width);
-    xlabel('# of memory bits');
-    ylabel('mean squared error');
-    hold on;
-    grid on
-    grid minor; 
-end
-
-figure(2)
-
-subplot(2,1,1);
-plot(N, max_abs_error, 'linewidth', width);
-xlabel('# of memory bits');
-ylabel('max abs error');
-hold on;
-grid on;
-grid minor;
-
-subplot(2,1,2);
-plot(N, mean_squ_error, 'linewidth', width);
-xlabel('# of memory bits');
-ylabel('mean squared error');
-hold on;
-grid on
-grid minor;
+%plot
+figure(1)
+s = surf(N,min_degree:max_degree, max_abs_error, log(max_abs_error));
+xlabel('memory utilization in number of bits');
+ylabel('computational effort in degree of polynomial');
+zlabel('max absolute error');

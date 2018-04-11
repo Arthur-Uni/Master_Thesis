@@ -56,9 +56,8 @@ c_poly_temp = double(coeffs(h, 'All'));
 
 %quantization
 if(q_en)
-    c_poly = cheb_quantize(c_poly_temp, mode, wordlength, var); %format: [cn,...,c0]
-    %c_poly = fi(c_poly, true, wordlength, var); %just a test to see if
-                                                 %cheb_quantize works as intended
+    %c_poly = cheb_quantize(c_poly_temp, mode, wordlength, var); %format: [cn,...,c0]
+    c_poly = fi(c_poly_temp, true, wordlength, var);
 else
     c_poly = c_poly_temp;
     c_poly = double(c_poly); %format: [cn,...,c0]

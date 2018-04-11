@@ -10,7 +10,7 @@
 %n = 3;
 
 %number of segments
-S = 2;
+S = 1;
 
 %number of points for linspace function
 pts = 100;
@@ -53,8 +53,8 @@ max_degree = 10;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
-min_word = 8;
-max_word = 16;
+min_word = 4;
+max_word = 32;
 word_size = ((max_word-min_word)/2) + 1;        %number of word steps
 step_size = 2;
 
@@ -63,18 +63,20 @@ mean_squ_error = zeros(degree_size,word_size);
 C = zeros(degree_size,word_size);                                    %number of coefficients
 N = zeros(degree_size,word_size);                                    %memory utilization
 
-mode = 1;
+mode = 2;
 
 P = zeros(S,pts);                               %matrix storing polynomial approximation values
                                                 %calculated for each
                                                 %segment
 
+q_en = 1;
+                                                
 for n=min_degree:max_degree
     i = 1;
     for wordlength = min_word:step_size:max_word
         var = wordlength-2;
         for k=1:S
-            P(k,1:pts) = cheb_horner(AB(k,1), AB(k,2), n, 1, mode, wordlength, var);
+            P(k,1:pts) = cheb_horner(AB(k,1), AB(k,2), n, q_en, mode, wordlength, var);
         end
         abs_error = max(abs(Y(:)-P(:)));
         max_abs_error(n, i) = abs_error;
@@ -91,7 +93,7 @@ end
 %     best_abs_error(i,1) = min(max_abs_error(i,1:end));
 %     best_mse (i,1) = min(mean_squ_error(i,1:end));
 % end
-% 
+
 % for i=1:max_degree
 %     figure(1);
 %     subplot(2,1,1);

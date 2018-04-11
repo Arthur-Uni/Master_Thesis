@@ -18,6 +18,9 @@ function [ y ] = cheb_horner( a, b, n, q_en, mode, wordlength, var)
 dots = linspace(-1,1);
 
 c = cheb_poly_coeffs(a,b,n,q_en,mode,wordlength,var);
+% c.bin
+% c.int
+% c.value
 
 k = length(dots);
 l = length(c);

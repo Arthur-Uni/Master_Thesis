@@ -10,14 +10,14 @@
 %n = 3;
 
 %number of segments
-S = 4;
+S = 2;
 
 %number of points for linspace function
 pts = 100;
 
 %interval [a,b]
 a = 0;
-b = 8;
+b = 4;
 interval_size = (b-a)/S;
 
 %combine a and b in matrix AB
@@ -53,8 +53,8 @@ max_degree = 10;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
-min_word = 4;
-max_word = 32;
+min_word = 8;
+max_word = 16;
 word_size = ((max_word-min_word)/2) + 1;        %number of word steps
 step_size = 2;
 
@@ -70,9 +70,9 @@ P = zeros(S,pts);                               %matrix storing polynomial appro
                                                 %segment
 
 for n=min_degree:max_degree
+    i = 1;
     for wordlength = min_word:step_size:max_word
-        i = 0.5*wordlength - 1;
-        var = wordlength - 2;
+        var = wordlength-2;
         for k=1:S
             P(k,1:pts) = cheb_horner(AB(k,1), AB(k,2), n, 1, mode, wordlength, var);
         end

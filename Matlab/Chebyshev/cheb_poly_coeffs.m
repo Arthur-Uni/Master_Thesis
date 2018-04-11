@@ -52,12 +52,13 @@ p_sym = sum(c .* subs(T_ks, ((x*(b-a)+(a+b))*0.5)));
 p_sym = expand(p_sym);
 h = horner(p_sym);
 
-c_poly_temp = coeffs(h, 'All');
+c_poly_temp = double(coeffs(h, 'All'));
 
 %quantization
 if(q_en)
-    c_poly = cheb_quantize(c_poly_temp, mode, wordlength, var);
-    c_poly = double(c_poly); %format: [cn,...,c0]
+    c_poly = cheb_quantize(c_poly_temp, mode, wordlength, var); %format: [cn,...,c0]
+    %c_poly = fi(c_poly, true, wordlength, var); %just a test to see if
+                                                 %cheb_quantize works as intended
 else
     c_poly = c_poly_temp;
     c_poly = double(c_poly); %format: [cn,...,c0]

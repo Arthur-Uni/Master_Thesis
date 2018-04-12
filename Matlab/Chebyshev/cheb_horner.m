@@ -15,7 +15,7 @@ function [ y ] = cheb_horner( a, b, n, q_en, mode, wordlength, var)
 %
 %    Output, vector y, final polynomial approximation
 
-dots = linspace(-1,1);
+dots = linspace(0,1);
 
 c = cheb_poly_coeffs(a,b,n,q_en,mode,wordlength,var);
 % c.bin
@@ -27,7 +27,11 @@ l = length(c);
 temp = c(1)*ones(1,k);
 
 for i=2:l
-    temp = temp.*dots + c(i);
+    temp(:) = temp.*dots + c(i);
+end
+
+if(q_en)
+    temp = fi(temp, true, wordlength, var);
 end
 
 y = temp;

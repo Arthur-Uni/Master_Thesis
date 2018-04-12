@@ -57,14 +57,17 @@ h = horner(p_sym);
 
 c_poly_temp = double(coeffs(h, 'All'));
 
+Q_EN = 0;
+
 %quantization
-if(q_en)
+if(q_en && Q_EN)
     %c_poly = cheb_quantize(c_poly_temp, mode, wordlength, var); %format: [cn,...,c0]
-    c_poly = fi(c_poly_temp, true, wordlength, var)
-    c_poly.value
+    c_poly = fi(c_poly_temp, true, wordlength, var);
+    vpa(c_poly)
 else
     c_poly = c_poly_temp;
-    c_poly = double(c_poly) %format: [cn,...,c0]
+    c_poly = double(c_poly); %format: [cn,...,c0]
+    vpa(c_poly)
 end
 
 end

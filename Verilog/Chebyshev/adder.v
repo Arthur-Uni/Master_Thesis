@@ -3,7 +3,10 @@ module adder(clock, resetn, in_a, in_b, out);
    parameter WL_A;   //word length of in_a
    parameter WL_B;   //word length of in_b
    
-   localparam WL_OUT = (WL_A>WL_B)? WL_A : WL_B;
+   // WIDENING = ceil(ld(degree of polynomial + 1))
+   localparam WIDENING = 2;
+   //adder widening: wordlength of output is wordlength of bigger input wordlength + ceil(ld(degree of polynomial + 1))
+   localparam WL_OUT = (WL_A>WL_B)? WL_A+WIDENING : WL_B+WIDENING;
 
    input                      clock;
    input                      resetn;

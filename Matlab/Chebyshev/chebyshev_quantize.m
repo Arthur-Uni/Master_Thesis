@@ -75,8 +75,8 @@ end
 
 %%
 %parameters
-max_degree = 10;
-min_degree = 0;
+max_degree = 5;
+min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
 min_word = 16;

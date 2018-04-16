@@ -57,17 +57,17 @@ p_sym = expand(p_sym);
 
 c_poly_temp = double(coeffs(p_sym, 'All'));
 
-Q_EN = 1;
+Q_EN = 0;
 
 %quantization
 if(q_en && Q_EN)
-    %c_poly = cheb_quantize(c_poly_temp, mode, wordlength, var); %format: [cn,...,c0]
+    %c_poly = cheb_quantize(c_poly_temp, 2, 32, 1); %format: [cn,...,c0]
     c_poly = fi(c_poly_temp, true, 16, 15);
     vpa(c_poly)
 else
     c_poly = c_poly_temp;
     c_poly = double(c_poly); %format: [cn,...,c0]
-    vpa(c_poly);
+    vpa(c_poly)
 end
 
 end

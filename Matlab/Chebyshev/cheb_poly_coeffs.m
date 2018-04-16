@@ -53,21 +53,21 @@ end
 %calculate polynomial approximation for: x2 = (x1*(b-a)+(a+b))*0.5; %from x1:[0,1] -> x2:[a,b]
 p_sym = sum(c .* subs(T_ks, (x*(b-a)+a)));
 p_sym = expand(p_sym);
-h = horner(p_sym);
+%h = horner(p_sym);
 
-c_poly_temp = double(coeffs(h, 'All'));
+c_poly_temp = double(coeffs(p_sym, 'All'));
 
-Q_EN = 0;
+Q_EN = 1;
 
 %quantization
 if(q_en && Q_EN)
     %c_poly = cheb_quantize(c_poly_temp, mode, wordlength, var); %format: [cn,...,c0]
-    c_poly = fi(c_poly_temp, true, wordlength, var);
+    c_poly = fi(c_poly_temp, true, 16, 15);
     vpa(c_poly)
 else
     c_poly = c_poly_temp;
     c_poly = double(c_poly); %format: [cn,...,c0]
-    vpa(c_poly)
+    vpa(c_poly);
 end
 
 end

@@ -10,8 +10,8 @@ clc;
 %n = 3;
 
 %number of segments
-S = 4;      %needs to be a power of two
-S_POT = log2(4)+1;
+S = 2;      %needs to be a power of two
+S_POT = log2(S)+1;
 
 %number of points for linspace function
 pts = 100;
@@ -76,11 +76,11 @@ end
 %%
 %parameters
 max_degree = 10;
-min_degree = 1;
+min_degree = 0;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
-min_word = 4;
-max_word = 32;
+min_word = 16;
+max_word = 16;
 word_size = ((max_word-min_word)/2) + 1;        %number of word steps
 step_size = 2;
 

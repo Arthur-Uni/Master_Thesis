@@ -11,7 +11,7 @@ clc;
 
 %number of segments
 S = 4;      %needs to be a power of two
-S_POT = log2(4)+1;
+S_POT = log2(S)+1;
 
 %number of points for linspace function
 pts = 100;

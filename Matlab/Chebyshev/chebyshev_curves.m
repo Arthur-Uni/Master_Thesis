@@ -10,7 +10,8 @@ clc;
 %n = 3;
 
 %number of segments
-S = 4;      %needs to be a power of two
+S = 4;      % needs to be a power of two such that interval [a,b] can be
+            % divided into integer powers of two
 S_POT = log2(S)+1;
 
 %number of points for linspace function
@@ -21,7 +22,7 @@ pts = 100;
 a = 0;
 b = 4;
 
-if(mod(b-a, 2) ~= 0)
+if(mod(b-a, 2) ~= 0 || S > b)
     error('interval size is not a power of two');
 end
 %interval_size = (b-a)/S;
@@ -75,7 +76,7 @@ end
 
 %%
 %parameters
-max_degree = 10;                                 %max polynomial degree
+max_degree = 3;                                 %max polynomial degree
 min_degree = 1;                                 %min polynomial degree
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
@@ -108,7 +109,7 @@ wordlength = 32;
 
 for n=min_degree:max_degree
     for i=1:S_POT
-        P_POT(i,1:pts) = cheb_horner(AB_POT(i,1), AB_POT(i,2), n, 0, 0, 0, 0);
+        P_POT(i,1:pts) = cheb_horner(AB_POT(i,1), AB_POT(i,2), n, 0, 0, 0);
     end
     abs_error = max(abs(Y_POT(:)-P_POT(:)));
     Max_abs_error(n - temp) = abs_error;
@@ -121,7 +122,7 @@ end
 %plots
 figure(1);
 subplot(2,1,1);
-plot(N, Max_abs_error, 'linewidth', width);
+p1 = plot(N, Max_abs_error, 'g', 'linewidth', width);
 xlabel('number of coefficients');
 ylabel('max abs error');
 legend(['N=' num2str(S)]);
@@ -129,7 +130,7 @@ hold on;
 grid on;
 
 subplot(2,1,2);
-plot(N, Mean_squ_error, 'linewidth', width);
+p2 = plot(N, Mean_squ_error, 'g', 'linewidth', width);
 xlabel('number of coefficients');
 ylabel('mean squared error');
 legend(['N=' num2str(S)]);

@@ -1,4 +1,4 @@
-function [ c_poly ] = cheb_poly_coeffs( a, b, n)
+function [ c_poly ] = cheb_poly_coeffs_quantized(  a, b, n, wordlength, fract )
 %Chebyshev polynomial approximation of tanh(x)
 
 %  Parameters:
@@ -9,13 +9,11 @@ function [ c_poly ] = cheb_poly_coeffs( a, b, n)
 %
 %    Input, boolean q_en, enable quantization
 %
-%    Input, integer mode, quantization mode: 1 = fixed point, 2 = floating point
+%    Input, integer wordlength, total wordlength
 %
-%    Input, integer wordlength
+%    Input, integer fract, fractional bits of total wordlength
 %
-%    Input, integer var
-%
-%    Output, vector c_poly, final polynomial coefficients
+%    Output, vector c_poly, final polynomial coefficients quantized
 
 %calculate chebyshev nodes
 k=(0:n);
@@ -53,9 +51,11 @@ end
 %calculate polynomial approximation for: x2 = (x1*(b-a)+(a+b))*0.5; %from x1:[0,1] -> x2:[a,b]
 p_sym = sum(c .* subs(T_ks, (x*(b-a)+a)));
 p_sym = expand(p_sym);
-%h = horner(p_sym);
 
-c_poly = double(coeffs(p_sym, 'All'));
+c_poly_temp = double(coeffs(p_sym, 'All'));
+
+%quantization
+c_poly = fi(c_poly_temp, true, wordlength, fract); %format: [cn,...,c0]
 
 end
 

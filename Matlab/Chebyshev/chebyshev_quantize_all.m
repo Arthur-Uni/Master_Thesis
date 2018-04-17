@@ -1,7 +1,7 @@
 %%
-% quantize final result only (signed fixed point) during chebyshev
-% polynomial approximation, every other calculation inbetween is 
-% performed with matlab default floating point precision
+% quantize final result, quantize intermediate result of horner scheme
+% multiplication and addition, obtained coefficients are quantized and 
+% inputs are quantized
 
 %%
 %cleanup
@@ -90,9 +90,6 @@ P_POT = zeros(S_POT,pts);                       %matrix storing polynomial
                                                 %approximation values
                                                 %calculated for each
                                                 %segment
-                                                
-q_en = 1;
-
 if(min_degree ~= 1)
     temp = min_degree-1;
 else
@@ -104,7 +101,7 @@ for n=min_degree:max_degree
     for wordlength = min_word:step_size:max_word
         var = wordlength-2;
         for k=1:S_POT
-            P_POT(k,1:pts) = cheb_horner(AB_POT(k,1), AB_POT(k,2), n, q_en, wordlength, var);
+            P_POT(k,1:pts) = cheb_horner_quantized(AB_POT(k,1), AB_POT(k,2), n, wordlength, var);
         end
         abs_error = max(abs(Y_POT(:)-P_POT(:)));
         max_abs_error(n - temp, i) = abs_error;
@@ -118,7 +115,7 @@ end
 figure(1)
 
 subplot(2,1,1);
-p1 = plot(N, max_abs_error, 'b', 'linewidth', width);
+p1 = plot(N, max_abs_error, 'r', 'linewidth', width);
 xlabel('# of memory bits');
 ylabel('max abs error');
 hold on;
@@ -131,7 +128,7 @@ end
 legend(Legend)
 
 subplot(2,1,2);
-p2 = plot(N, mean_squ_error, 'b', 'linewidth', width);
+p2 = plot(N, mean_squ_error, 'r', 'linewidth', width);
 xlabel('# of memory bits');
 ylabel('mean squared error');
 hold on;

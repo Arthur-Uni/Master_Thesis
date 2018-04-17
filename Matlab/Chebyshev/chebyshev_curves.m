@@ -83,7 +83,7 @@ degree_size = max_degree - min_degree +1;       %number of degree steps
 Max_abs_error = zeros(1,degree_size);           %max absolute error for every degree 
 Mean_squ_error = zeros(1,degree_size);          %mean square error for every degree
 C = zeros(1,degree_size);                       %number of coefficients
-N = zeros(1,degree_size);               %memory utilization
+N = zeros(1,degree_size);                       %memory utilization
 
 % P = zeros(S,pts);                             %matrix storing polynomial approximation values
 %                                               %calculated for each

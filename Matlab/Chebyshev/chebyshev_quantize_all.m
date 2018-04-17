@@ -115,7 +115,7 @@ end
 figure(1)
 
 subplot(2,1,1);
-p1 = plot(N, max_abs_error, 'r', 'linewidth', width);
+p1 = plot(N, max_abs_error, 'b', 'linewidth', width);
 xlabel('# of memory bits');
 ylabel('max abs error');
 hold on;
@@ -128,7 +128,7 @@ end
 legend(Legend)
 
 subplot(2,1,2);
-p2 = plot(N, mean_squ_error, 'r', 'linewidth', width);
+p2 = plot(N, mean_squ_error, 'b', 'linewidth', width);
 xlabel('# of memory bits');
 ylabel('mean squared error');
 hold on;

@@ -1,7 +1,14 @@
+function [ M, N, C ] = cheb_quantized_segmentation( S )
 %%
-% quantize final result only (signed fixed point) during chebyshev
-% polynomial approximation, every other calculation inbetween is 
-% performed with matlab default floating point precision
+%paramter
+% input S, integer, number of segments
+% output M, double, matrix containing max_abs_error
+% output N, double, matrix containing # of memory bits
+%%
+%%
+% quantize final result, quantize intermediate result of horner scheme
+% multiplication and addition, obtained coefficients are quantized and 
+% inputs are quantized
 
 %%
 %cleanup
@@ -16,8 +23,6 @@ clc;
 %n = 3;
 
 %number of segments
-S = 4;      % needs to be a power of two such that interval [a,b] can be
-            % divided into integer powers of two
 S_POT = log2(S)+1;
 
 %number of points for linspace function
@@ -39,8 +44,8 @@ AB_POT = zeros(S_POT,2);
 %plotting points in interval [a,b]
 Dots_POT = zeros(S_POT,pts);
 
-%plotting parameters
-width = 1;
+% plotting parameters
+width = 1.5;
 
 %%
 %create matrices for intervals to the power of two in [a,b] and save boundaries of
@@ -83,16 +88,14 @@ step_size = 2;
 
 max_abs_error = zeros(degree_size,word_size);
 mean_squ_error = zeros(degree_size,word_size);
-C = zeros(degree_size,word_size);               %number of coefficients
+Coeffs = zeros(degree_size,word_size);          %number of coefficients
 N = zeros(degree_size,word_size);               %memory utilization
+C = zeros(degree_size,word_size);               %computational effort
                                                 
 P_POT = zeros(S_POT,pts);                       %matrix storing polynomial 
                                                 %approximation values
                                                 %calculated for each
                                                 %segment
-                                                
-q_en = 1;
-
 if(min_degree ~= 1)
     temp = min_degree-1;
 else
@@ -104,74 +107,19 @@ for n=min_degree:max_degree
     for wordlength = min_word:step_size:max_word
         var = wordlength-2;
         for k=1:S_POT
-            P_POT(k,1:pts) = cheb_horner(AB_POT(k,1), AB_POT(k,2), n, q_en, wordlength, var);
+            P_POT(k,1:pts) = cheb_horner_quantized(AB_POT(k,1), AB_POT(k,2), n, wordlength, var);
         end
         abs_error = max(abs(Y_POT(:)-P_POT(:)));
         max_abs_error(n - temp, i) = abs_error;
         mean_squ_error(n - temp, i) = immse(double(Y_POT), double(P_POT));
-        C(n - temp, i) = (n+1)*S_POT;
-        N(n - temp, i) = C(n - temp)*wordlength;
+        Coeffs(n - temp, i) = (n+1)*S_POT;
+        N(n - temp, i) = Coeffs(n - temp)*16;
+        C(n - temp, i) = 2*n*wordlength;    % number of operations * wordlength = computational effort
         i = i+1;
     end
 end
 
-figure(1)
+M = max_abs_error;
 
-subplot(2,1,1);
-p1 = plot(N, max_abs_error, 'b', 'linewidth', width);
-xlabel('# of memory bits');
-ylabel('max abs error');
-hold on;
-grid on;
-
-Legend = cell(word_size,1);
-for iter=1:word_size
-    Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
-end
-legend(Legend);
-
-subplot(2,1,2);
-p2 = plot(N, mean_squ_error, 'b', 'linewidth', width);
-xlabel('# of memory bits');
-ylabel('mean squared error');
-hold on;
-grid on
-
-Legend = cell(word_size,1);
-for iter=1:word_size
-    Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
-end
-legend(Legend);
-
-best_abs_error = zeros(degree_size,1);
-best_mse = zeros(degree_size,1);
-for i=1:degree_size
-    best_abs_error(i,1) = min(max_abs_error(i,1:end));
-    best_mse (i,1) = min(mean_squ_error(i,1:end));
 end
 
-% for i=1:degree_size
-%     figure(2);
-%     subplot(2,1,1);
-%     plot(N(i,1:word_size), max_abs_error(i,1:word_size), 'linewidth', width);
-%     xlabel('# of memory bits');
-%     ylabel('max abs error');
-%     hold on;
-%     grid on;
-%     grid minor;
-% 
-%     subplot(2,1,2);
-%     plot(N(i,1:word_size), mean_squ_error(i,1:word_size), 'linewidth', width);
-%     xlabel('# of memory bits');
-%     ylabel('mean squared error');
-%     hold on;
-%     grid on
-%     grid minor; 
-% end
-
-%plot
-% figure(1)
-% s = surf(N,min_degree:max_degree, max_abs_error, log(max_abs_error));
-% xlabel('memory utilization in number of bits');
-% ylabel('computational effort in degree of polynomial');
-% zlabel('max absolute error');

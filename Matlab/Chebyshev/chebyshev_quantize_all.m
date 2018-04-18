@@ -16,7 +16,7 @@ clc;
 %n = 3;
 
 %number of segments
-S = 4;      % needs to be a power of two such that interval [a,b] can be
+S = 2;      % needs to be a power of two such that interval [a,b] can be
             % divided into integer powers of two
 S_POT = log2(S)+1;
 
@@ -40,7 +40,7 @@ AB_POT = zeros(S_POT,2);
 Dots_POT = zeros(S_POT,pts);
 
 %plotting parameters
-width = 1;
+width = 1.5;
 
 %%
 %create matrices for intervals to the power of two in [a,b] and save boundaries of
@@ -72,19 +72,20 @@ end
 
 %%
 %parameters
-max_degree = 3;
+max_degree = 10;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
-min_word = 4;
+min_word = 8;
 max_word = 32;
 word_size = ((max_word-min_word)/2) + 1;        %number of word steps
 step_size = 2;
 
 max_abs_error = zeros(degree_size,word_size);
 mean_squ_error = zeros(degree_size,word_size);
-C = zeros(degree_size,word_size);               %number of coefficients
+Coeffs = zeros(degree_size,word_size);          %number of coefficients
 N = zeros(degree_size,word_size);               %memory utilization
+C = zeros(degree_size,word_size);               %computational effort
                                                 
 P_POT = zeros(S_POT,pts);                       %matrix storing polynomial 
                                                 %approximation values
@@ -106,16 +107,20 @@ for n=min_degree:max_degree
         abs_error = max(abs(Y_POT(:)-P_POT(:)));
         max_abs_error(n - temp, i) = abs_error;
         mean_squ_error(n - temp, i) = immse(double(Y_POT), double(P_POT));
-        C(n - temp, i) = (n+1)*S_POT;
-        N(n - temp, i) = C(n - temp)*wordlength;
+        Coeffs(n - temp, i) = (n+1)*S_POT;
+        N(n - temp, i) = Coeffs(n - temp)*8; % 16 = wordlength of coefficients
+        C(n - temp, i) = 2*n*wordlength;      % number of operations * wordlength = computational effort
         i = i+1;
     end
 end
+%%
+%plots
 
+%2D
 figure(1)
 
-subplot(2,1,1);
-p1 = plot(N, max_abs_error, 'b', 'linewidth', width);
+subplot(4,1,1);
+p1 = plot(N, max_abs_error, 'LineWidth', width);
 xlabel('# of memory bits');
 ylabel('max abs error');
 hold on;
@@ -125,20 +130,46 @@ Legend = cell(word_size,1);
 for iter=1:word_size
     Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
 end
-legend(Legend)
+legend(Legend);
 
-subplot(2,1,2);
-p2 = plot(N, mean_squ_error, 'b', 'linewidth', width);
+subplot(4,1,2);
+p2 = plot(N, mean_squ_error, 'LineWidth', width);
 xlabel('# of memory bits');
 ylabel('mean squared error');
 hold on;
-grid on
+grid on;
 
 Legend = cell(word_size,1);
 for iter=1:word_size
     Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
 end
-legend(Legend)
+legend(Legend);
+
+subplot(4,1,3);
+p3 = plot(C, max_abs_error, 'LineWidth', width);
+xlabel('computational effort');
+ylabel('max abs error');
+hold on;
+grid on;
+
+Legend = cell(word_size,1);
+for iter=1:word_size
+    Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
+end
+legend(Legend);
+
+subplot(4,1,4);
+p4 = plot(C, mean_squ_error, 'LineWidth', width);
+xlabel('computational effort');
+ylabel('mean squared error');
+hold on;
+grid on;
+
+Legend = cell(word_size,1);
+for iter=1:word_size
+    Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
+end
+legend(Legend);
 
 best_abs_error = zeros(degree_size,1);
 best_mse = zeros(degree_size,1);
@@ -166,9 +197,34 @@ end
 %     grid minor; 
 % end
 
-%plot
+% 3D
+
 % figure(1)
 % s = surf(N,min_degree:max_degree, max_abs_error, log(max_abs_error));
 % xlabel('memory utilization in number of bits');
 % ylabel('computational effort in degree of polynomial');
 % zlabel('max absolute error');
+
+%%
+% pareto optimization
+M = max_abs_error;
+
+P = cheb_pareto(M, N, C);
+
+Ones = P>0;
+
+M_pareto = Ones .* M;
+N_pareto = Ones .* N;
+C_pareto = Ones .* C;
+
+M_pareto(M_pareto==0) = [];
+N_pareto(N_pareto==0) = [];
+C_pareto(C_pareto==0) = [];
+
+figure(2)
+s_pareto = scatter(C_pareto, M_pareto, 75, '*', 'LineWidth', 2.5);
+%s_pareto = scatter(N_pareto, M_pareto, 75, '*', 'LineWidth', 2.5);
+
+figure(3)
+s = scatter(C(:), M(:), 75, '*', 'r', 'LineWidth', 2.5);
+%s = scatter(N(:), M(:), 75, '*', 'r', 'LineWidth', 2.5);

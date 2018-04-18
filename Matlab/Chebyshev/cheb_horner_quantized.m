@@ -17,10 +17,12 @@ dots = linspace(0,1);
 dots = fi(dots, true, 16,15);
 
 c = cheb_poly_coeffs_quantized(a,b,n,16,14);
+%c = cheb_poly_coeffs_quantized(a,b,n,wordlength,fract);
 
 k = length(dots);
 l = length(c);
 temp = fi(ones(1,k), true, wordlength, fract);
+%temp = ones(1,k);
 temp(:) = c(1);
 
 for i=2:l
@@ -29,6 +31,7 @@ for i=2:l
     %quantize temporary result so that wordlength of multiply and add
     %operation does not grow indefinitely
     temp = fi(temp, true, 2*wordlength, 2*wordlength-1);
+    %temp = fi(temp, true, 32, 31);
 end
 
 % quantize the final result to have an output of wordlength bits

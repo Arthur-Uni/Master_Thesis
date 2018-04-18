@@ -8,7 +8,6 @@ module ids_chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
 
    parameter WORD_LENGTH  = 16;
    parameter COEFF_LENGTH = 16;
-   parameter TEMP_LENGTH = WORD_LENGTH + COEFF_LENGTH;
    
    // WIDENING = ceil(ld(degree of polynomial + 1))
    localparam WIDENING = 2;
@@ -28,11 +27,10 @@ module ids_chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
 
    reg      [WORD_LENGTH-1:0]    in;
    reg      [ADDER_OUT-1:0]      out;
-   reg      [TEMP_LENGTH-1:0]    temp_out;
+   reg      [MULT_OUT-1:0]       temp;
 
    reg      [COEFF_LENGTH-1:0]   coeff;
    
-   wire     [MULT_OUT-1:0]       mult_out;
    wire     [ADDER_OUT-1:0]      adder_out;
    wire     [TEMP_LENGTH-1:0]    adder_out_trim;
 
@@ -40,8 +38,8 @@ module ids_chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
       .clock(clock),
       .resetn(resetn),
       .in_a(in),
-      .in_b(temp_out),
-      .out(mult_out)
+      .in_b(adder_out_trim),
+      .out(temp)
    );
    
    adder a (
@@ -59,7 +57,7 @@ module ids_chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
                in             <= {WORD_LENGTH{1'b0}};
                out            <= {WORD_LENGTH{1'b0}};
                coeff          <= {WORD_LENGTH{1'b0}};
-               temp_out       <= {WORD_LENGTH{1'b0}};
+               temp           <= {WORD_LENGTH{1'b0}};
             end
          else
             begin

@@ -22,7 +22,7 @@ module mult(clock, resetn, in_a, in_b, out);
    assign mult_out = a_reg * b_reg;
    assign out = out_reg;
 
-   always @(posedge clock)
+   always @(posedge clock or negedge resetn)
       begin if(!resetn)
          begin
             a_reg  <= {WL_A{1'b0}};

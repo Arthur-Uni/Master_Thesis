@@ -6,41 +6,46 @@
 
 module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
 
-   parameter WORD_LENGTH  = 16;
-   parameter COEFF_LENGTH = 16;
+   parameter WL;  //input word length
+   parameter CL;  //coefficient length
    
    // WIDENING = ceil(ld(degree of polynomial))
    localparam WIDENING = 2;
    
-   localparam MULT_OUT = 2*WORD_LENGTH + COEFF_LENGTH;
+   localparam MULT_OUT = 2*WL + CL;
    localparam ADDER_OUT = MULT_OUT + WIDENING;
-   localparam ADDER_OUT_TRIM = WORD_LENGTH + COEFF_LENGTH;
+   localparam ADDER_OUT_TRIM = WL + CL;
    
-   input    clock;
-   input    resetn;
+   input                               clock;
+   input                               resetn;
 
-   input    [WORD_LENGTH-1:0]    data_in;
-   input    [COEFF_LENGTH-1:0]   coeff_in;
+   input signed   [WL-1:0]             data_in;
+   input signed   [CL-1:0]             coeff_in;
 
-   output   [WORD_LENGTH-1:0]    data_out;
+   output signed  [WL-1:0]             data_out;
 
-   reg      [WORD_LENGTH-1:0]    in;
-   reg      [ADDER_OUT-1:0]      out;
-   reg      [MULT_OUT-1:0]       temp;
+   reg signed     [WL-1:0]             in;
+   reg signed     [ADDER_OUT-1:0]      out;
+   reg signed     [MULT_OUT-1:0]       temp;
 
-   reg      [COEFF_LENGTH-1:0]   coeff;
+   reg signed     [CL-1:0]             coeff;
    
-   wire     [ADDER_OUT-1:0]      adder_out;
-   wire     [ADDER_OUT_TRIM-1:0] adder_out_trim;
-   wire     [ADDER_OUT_TRIM:0]   rounding;
+   wire signed    [ADDER_OUT-1:0]      adder_out;
+   wire signed    [MULT_OUT -1:0]      mult_out;
+   wire signed    [ADDER_OUT_TRIM-1:0] adder_out_trim;
+   wire signed    [ADDER_OUT-1:0]      rounding;
 
    mult m (
       .clock(clock),
       .resetn(resetn),
       .in_a(in),
       .in_b(adder_out_trim),
-      .out(temp)
+      .out(mult_out)
    );
+   
+   defparam
+      m.WL_A = WL,
+      m.WL_B = WL + CL;
    
    adder a (
       .clock(clock),
@@ -49,21 +54,26 @@ module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
       .in_b(coeff),
       .out(adder_out)
    );
+   
+   defparam
+      a.WL_A = MULT_OUT,
+      a.WL_B = CL;
 
    always @(posedge clock or negedge resetn)
       begin
          if(!resetn)
             begin
-               in             <= {WORD_LENGTH{1'b0}};
-               out            <= {WORD_LENGTH{1'b0}};
-               coeff          <= {WORD_LENGTH{1'b0}};
-               temp           <= {WORD_LENGTH{1'b0}};
+               in             <= {WL{1'b0}};
+               out            <= {WL{1'b0}};
+               coeff          <= {WL{1'b0}};
+               temp           <= {WL{1'b0}};
             end
          else
             begin
                in <= data_in;
                coeff <= coeff_in;
-               out <= data_out;
+               temp <= mult_out;
+               out <= adder_out;
             end
       end
    
@@ -75,5 +85,6 @@ module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
    
    assign rounding = adder_out[ADDER_OUT-1:0] + {{(ADDER_OUT_TRIM){1'b0}}, 1'b1, {(ADDER_OUT-ADDER_OUT_TRIM-1){1'b0}} }; //add 1/2 lsb
    assign adder_out_trim = rounding[ADDER_OUT-1:(ADDER_OUT-ADDER_OUT_TRIM)];  //truncate result
+   assign data_out = out;
    
 endmodule

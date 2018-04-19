@@ -19,10 +19,10 @@ module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
    input                               clock;
    input                               resetn;
 
-   input signed   [WL-1:0]             data_in;
-   input signed   [CL-1:0]             coeff_in;
+   input          [WL-1:0]             data_in;
+   input          [CL-1:0]             coeff_in;
 
-   output signed  [WL-1:0]             data_out;
+   output         [WL-1:0]             data_out;
 
    reg signed     [WL-1:0]             in;
    reg signed     [ADDER_OUT-1:0]      out;
@@ -73,7 +73,7 @@ module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
                in <= data_in;
                coeff <= coeff_in;
                temp <= mult_out;
-               out <= adder_out;
+               out <= out + adder_out;
             end
       end
    

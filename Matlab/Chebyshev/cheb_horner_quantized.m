@@ -21,7 +21,7 @@ c = cheb_poly_coeffs_quantized(a,b,n,16,14);
 
 k = length(dots);
 l = length(c);
-temp = fi(ones(1,k), true, wordlength, fract);
+temp = fi(ones(1,k), true, wordlength, fract, 'RoundingMethod', 'Round');
 %temp = ones(1,k);
 temp(:) = c(1);
 

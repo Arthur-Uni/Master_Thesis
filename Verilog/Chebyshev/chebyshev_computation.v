@@ -4,18 +4,17 @@
 // #			 the chebyshev polynomial sequentially
 // ###################################
 
-module ids_chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
+module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
 
    parameter WORD_LENGTH  = 16;
    parameter COEFF_LENGTH = 16;
    
-   // WIDENING = ceil(ld(degree of polynomial + 1))
+   // WIDENING = ceil(ld(degree of polynomial))
    localparam WIDENING = 2;
    
    localparam MULT_OUT = 2*WORD_LENGTH + COEFF_LENGTH;
    localparam ADDER_OUT = MULT_OUT + WIDENING;
-   localparam ADDER_OUT_TRIM = WORD_LENGTH + COEFF_LENGTH +WIDENING;
-   localparam TEMP = ADDER_OUT - ADDER_OUT_TRIM;
+   localparam ADDER_OUT_TRIM = WORD_LENGTH + COEFF_LENGTH;
    
    input    clock;
    input    resetn;
@@ -32,7 +31,8 @@ module ids_chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
    reg      [COEFF_LENGTH-1:0]   coeff;
    
    wire     [ADDER_OUT-1:0]      adder_out;
-   wire     [TEMP_LENGTH-1:0]    adder_out_trim;
+   wire     [ADDER_OUT_TRIM-1:0] adder_out_trim;
+   wire     [ADDER_OUT_TRIM:0]   rounding;
 
    mult m (
       .clock(clock),
@@ -67,6 +67,13 @@ module ids_chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
             end
       end
    
-   assign adder_out_trim = adder_out[ADDER_OUT-1:TEMP];
+   // round half up: xxx.xxxx
+   //   add 1/2 LSB +000.0010
+   //                --------
+   //                yyy.yyyx
+   // truncate:      yyy.yy--
+   
+   assign rounding = adder_out[ADDER_OUT-1:0] + {{(ADDER_OUT_TRIM){1'b0}}, 1'b1, {(ADDER_OUT-ADDER_OUT_TRIM-1){1'b0}} }; //add 1/2 lsb
+   assign adder_out_trim = rounding[ADDER_OUT-1:(ADDER_OUT-ADDER_OUT_TRIM)];  //truncate result
    
 endmodule

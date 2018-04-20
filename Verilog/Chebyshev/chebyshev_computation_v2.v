@@ -67,8 +67,8 @@ module chebyshev_computation_v2(clock, resetn, data_in, coeff_in, data_out);
    
 // assign mult_out            = in * adder_out_trim_reg;
    assign mult_out            = in * adder_out_trim;
-   assign adder_out           = temp + coeff;
-   assign coeff_shifted = coeff << (ADDER_OUT_TRIM-1);  //shift coefficient before adding
+   assign adder_out           = temp + coeff_shifted;
+   assign coeff_shifted = coeff << (ADDER_OUT_TRIM-2);  //shift coefficient before adding
    assign adder_out_shifted = adder_out << 1;
    assign rounding = adder_out_shifted[ADDER_OUT-1:0] + {{(ADDER_OUT_TRIM){1'b0}}, 1'b1, {(ADDER_OUT-ADDER_OUT_TRIM-1){1'b0}} }; //add 1/2 lsb
    assign adder_out_trim = rounding[ADDER_OUT-1:(ADDER_OUT-ADDER_OUT_TRIM)];  //truncate result

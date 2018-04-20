@@ -1,7 +1,7 @@
 module chebyshev_computation_tb();
 
-   localparam WL_A_TB = 4;   //word length of a_reg for testbench
-   localparam WL_B_TB = 4;   //word length of mult2 for testbench
+   localparam WL_A_TB = 2;   //word length of a_reg for testbench
+   localparam WL_B_TB = 2;   //word length of mult2 for testbench
    localparam WIDENING = 0;
 
    localparam OUT = 2*WL_A_TB + WL_B_TB + WIDENING;
@@ -29,7 +29,7 @@ module chebyshev_computation_tb();
    
 // generate clock signal
    initial begin 
-      clock = 0;
+      clock = 1;
       forever begin
          #5 clock = ~clock;
       end 
@@ -38,9 +38,9 @@ module chebyshev_computation_tb();
    initial begin
       resetn = 1;
       # 10 resetn = 0;
-      # 10 resetn = 1; data_in = 4'b0_001; coeff_in = 4'b00_10;
-      # 20 data_in = 4'b0_001; coeff_in = 4'b01_01;
-      # 20 data_in = 4'b0_111; coeff_in = 4'b00_00;      
+      # 10 resetn = 1; data_in = 2'b01; coeff_in = 2'b01;
+      # 10 data_in = 2'b01; coeff_in = 2'b01;
+      # 10 data_in = 2'b01; coeff_in = 2'b00;      
    end
       
 endmodule

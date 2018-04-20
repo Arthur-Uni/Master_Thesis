@@ -27,10 +27,9 @@ temp(:) = c(1);
 
 for i=2:l
     temp = temp.*dots + c(i);
-    
     %quantize temporary result so that wordlength of multiply and add
     %operation does not grow indefinitely
-    temp = fi(temp, true, 2*wordlength, 2*wordlength-1);
+    temp = fi(temp, true, wordlength + 16, (wordlength + 16)-2);
     %temp = fi(temp, true, 32, 31);
 end
 

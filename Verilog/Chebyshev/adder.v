@@ -4,7 +4,8 @@ module adder(clock, resetn, in_a, in_b, out);
    parameter WL_B;   //word length of in_b
    
    // WIDENING = ceil(ld(degree of polynomial + 1))
-   localparam WIDENING = 2;
+   parameter WIDENING;
+   
    //adder widening: wordlength of output is wordlength of bigger input wordlength + ceil(ld(degree of polynomial + 1))
    localparam WL_OUT = (WL_A>WL_B)? WL_A+WIDENING : WL_B+WIDENING;
 
@@ -19,9 +20,9 @@ module adder(clock, resetn, in_a, in_b, out);
    reg signed [WL_A-1:0]      a_reg;
    reg signed [WL_B-1:0]      b_reg;
 
-   reg  signed [WL_OUT:0]     out_reg;
+   reg  signed [WL_OUT-1:0]     out_reg;
    
-   wire signed [WL_OUT:0]     adder_out;
+   wire signed [WL_OUT-1:0]     adder_out;
    
    assign adder_out = a_reg + b_reg;
    assign out = out_reg;

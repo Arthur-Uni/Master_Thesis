@@ -10,7 +10,7 @@ module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
    parameter CL;  //coefficient length
    
    // WIDENING = ceil(ld(degree of polynomial))
-   localparam WIDENING = 2;
+   parameter WIDENING = 0;
    
    localparam MULT_OUT = 2*WL + CL;
    localparam ADDER_OUT = MULT_OUT + WIDENING;
@@ -31,6 +31,8 @@ module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
    reg signed     [CL-1:0]             coeff;
    
    wire signed    [ADDER_OUT-1:0]      adder_out;
+   wire signed    [ADDER_OUT-1:0]      coeff_shifted;
+   wire signed    [ADDER_OUT-1:0]      adder_out_shifted;
    wire signed    [MULT_OUT -1:0]      mult_out;
    wire signed    [ADDER_OUT_TRIM-1:0] adder_out_trim;
    wire signed    [ADDER_OUT-1:0]      rounding;
@@ -51,13 +53,14 @@ module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
       .clock(clock),
       .resetn(resetn),
       .in_a(mult_out),
-      .in_b(coeff),
+      .in_b(coeff_shifted),
       .out(adder_out)
    );
    
    defparam
       a.WL_A = MULT_OUT,
-      a.WL_B = CL;
+      a.WL_B = ADDER_OUT,
+      a.WIDENING = WIDENING;
 
    always @(posedge clock or negedge resetn)
       begin
@@ -83,7 +86,9 @@ module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
    //                yyy.yyyx
    // truncate:      yyy.yy--
    
-   assign rounding = adder_out[ADDER_OUT-1:0] + {{(ADDER_OUT_TRIM){1'b0}}, 1'b1, {(ADDER_OUT-ADDER_OUT_TRIM-1){1'b0}} }; //add 1/2 lsb
+   assign coeff_shifted = coeff << (ADDER_OUT_TRIM-1);  //shift coefficient before adding
+   assign adder_out_shifted = adder_out << 1;
+   assign rounding = adder_out_shifted[ADDER_OUT-1:0] + {{(ADDER_OUT_TRIM){1'b0}}, 1'b1, {(ADDER_OUT-ADDER_OUT_TRIM-1){1'b0}} }; //add 1/2 lsb
    assign adder_out_trim = rounding[ADDER_OUT-1:(ADDER_OUT-ADDER_OUT_TRIM)];  //truncate result
    assign data_out = out;
    

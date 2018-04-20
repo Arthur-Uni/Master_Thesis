@@ -10,7 +10,7 @@ module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
    parameter CL;  //coefficient length
    
    // WIDENING = ceil(ld(degree of polynomial))
-   parameter WIDENING = 0;
+   parameter WIDENING;
    
    localparam MULT_OUT = 2*WL + CL;
    localparam ADDER_OUT = MULT_OUT + WIDENING;
@@ -22,7 +22,7 @@ module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
    input          [WL-1:0]             data_in;
    input          [CL-1:0]             coeff_in;
 
-   output         [WL-1:0]             data_out;
+   output         [ADDER_OUT-1:0]      data_out;
 
    reg signed     [WL-1:0]             in;
    reg signed     [ADDER_OUT-1:0]      out;

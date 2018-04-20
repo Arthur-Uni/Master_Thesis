@@ -14,7 +14,7 @@ module chebyshev_computation_tb();
 
    wire signed [OUT-1:0]            data_out;
    
-   chebyshev_computation DUT(
+   chebyshev_computation_v2 DUT(
       .clock(clock),
       .resetn(resetn),
       .data_in(data_in),
@@ -36,10 +36,11 @@ module chebyshev_computation_tb();
    end
    
    initial begin
-      resetn = 0;
-      # 10 resetn = 1; data_in = 4'b0_100; coeff_in = 4'b00_10;
-      # 30 data_in = 4'b0_001; coeff_in = 4'b01_01;
-      # 50 data_in = 4'b0_111; coeff_in = 4'b00_00;      
+      resetn = 1;
+      # 10 resetn = 0;
+      # 10 resetn = 1; data_in = 4'b0_000; coeff_in = 4'b00_10;
+      # 20 data_in = 4'b0_001; coeff_in = 4'b01_01;
+      # 20 data_in = 4'b0_111; coeff_in = 4'b00_00;      
    end
       
 endmodule

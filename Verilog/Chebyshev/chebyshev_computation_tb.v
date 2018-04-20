@@ -31,14 +31,14 @@ module chebyshev_computation_tb();
    initial begin 
       clock = 0;
       forever begin
-         #10 clock = ~clock;
+         #5 clock = ~clock;
       end 
    end
    
    initial begin
       resetn = 1;
       # 10 resetn = 0;
-      # 10 resetn = 1; data_in = 4'b0_000; coeff_in = 4'b00_10;
+      # 10 resetn = 1; data_in = 4'b0_001; coeff_in = 4'b00_10;
       # 20 data_in = 4'b0_001; coeff_in = 4'b01_01;
       # 20 data_in = 4'b0_111; coeff_in = 4'b00_00;      
    end

@@ -63,7 +63,7 @@ module chebyshev_computation_v2(clock, resetn, data_in, coeff_in, data_out);
    //                               and coeff has only 2 integere bits by design                                           the size of the remaining fractional bits
    //                                                                                                                         (ADDER_OUT-WIDENING-(CL-2)-3)
    // check, if coeff_in is a negative number: if not, fill left of coeff with zeros, otherwise with ones
-   assign coeff_shifted = (coeff_in[CL-1] == 1'b0) ? { {WIDENING{1'b0}}, 1'b0, coeff, {(ADDER_OUT-WIDENING-(CL-2)-3){1'b0}} } : { {WIDENING{1'b1}}, 1'b1, coeff, {(ADDER_OUT-WIDENING-(CL-2)-3){1'b0}} } ;
+   assign coeff_shifted     = (coeff_in[CL-1] == 1'b0) ? { {WIDENING{1'b0}}, 1'b0, coeff, {(ADDER_OUT-WIDENING-(CL-2)-3){1'b0}} } : { {WIDENING{1'b1}}, 1'b1, coeff, {(ADDER_OUT-WIDENING-(CL-2)-3){1'b0}} } ;
    
    // shift adder_out to the left to get the format: xxx.yyyyyyy
    assign adder_out_shifted = adder_out << WIDENING;
@@ -73,13 +73,13 @@ module chebyshev_computation_v2(clock, resetn, data_in, coeff_in, data_out);
    //                --------
    //                yyy.yyyx
    // truncate:      yyy.yy--
-   assign rounding = adder_out_shifted[ADDER_OUT-1:0] + {1'b0, {(ADDER_OUT_TRIM){1'b0}}, 1'b1, {(ADDER_OUT-ADDER_OUT_TRIM-2){1'b0}} }; //add 1/2 lsb
-   assign rounding_shifted = rounding << 1;
-   assign adder_out_trim = rounding_shifted[ADDER_OUT-1:(ADDER_OUT-ADDER_OUT_TRIM)];  //truncate result
+   assign rounding          = adder_out_shifted[ADDER_OUT-1:0] + {1'b0, {(ADDER_OUT_TRIM){1'b0}}, 1'b1, {(ADDER_OUT-ADDER_OUT_TRIM-2){1'b0}} }; //add 1/2 lsb
+   assign rounding_shifted  = rounding << 1;
+   assign adder_out_trim    = rounding_shifted[ADDER_OUT-1:(ADDER_OUT-ADDER_OUT_TRIM)];  //truncate result
    
-   assign mult_out            = in * adder_out_trim;
-   assign adder_out           = temp + coeff_shifted;
+   assign mult_out          = in * adder_out_trim;
+   assign adder_out         = temp + coeff_shifted;
    
-   assign data_out = out;
+   assign data_out          = out;
    
 endmodule

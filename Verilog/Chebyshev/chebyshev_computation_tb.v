@@ -40,7 +40,8 @@ module chebyshev_computation_tb();
       # 10 resetn = 0;
       # 10 resetn = 1; data_in = 4'b0_100; coeff_in = 4'b00_10;
       # 10 data_in = 4'b0_100; coeff_in = 4'b00_10;
-      # 10 data_in = 4'b0_100; coeff_in = 4'b00_00;      
+      # 10 data_in = 4'b0_100; coeff_in = 4'b00_00;
+      # 10 data_in = 4'b0_000;
    end
       
 endmodule

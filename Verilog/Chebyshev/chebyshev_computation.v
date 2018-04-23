@@ -76,7 +76,7 @@ module chebyshev_computation(clock, resetn, data_in, coeff_in, data_out);
                in             <= data_in;
                coeff          <= coeff_in;
                temp           <= mult_out;
-               out            <= out + adder_out;
+               out            <= adder_out;
             end
       end
    

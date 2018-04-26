@@ -1,14 +1,30 @@
+%%cleanup
+clc;
+clear;
+
+%%
+% parameters
+
+% interval [a,b]: length must be a power of two so that the interval can be
+% divided into powers of two
+a = 0;
+b = 8;
+
+% number of points for linspace function
+pts = 100;
+
 %%
 % do chebyshev approximations with a different number of segments
-[M1, N1, C1] = cheb_quantized_segmentation(1);
-[M2, N2, C2] = cheb_quantized_segmentation(2);
-[M3, N3, C3] = cheb_quantized_segmentation(4);
+[M1, N1, C1] = cheb_segmentation(1,a,b,pts);
+[M2, N2, C2] = cheb_segmentation(2,a,b,pts);
+[M3, N3, C3] = cheb_segmentation(4,a,b,pts);
+[M4, N4, C4] = cheb_segmentation(8,a,b,pts);
 
 % combine all max absolute errors, memory utilization and computational
 % values in one matrix for each metric
-M = [M1;M2;M3];
-N = [N1;N2;N3];
-C = [C1;C2;C3];
+M = [M1; M2; M3; M4];
+N = [N1; N2; N3; N4];
+C = [C1; C2; C3; C4];
 
 %%
 % find pareto optimal points over all values

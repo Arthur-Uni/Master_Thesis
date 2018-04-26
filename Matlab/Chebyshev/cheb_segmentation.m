@@ -6,14 +6,12 @@ function [ M, N, C ] = cheb_segmentation( S, a, b, pts )
 
 % S needs to be a power of two such that interval [a,b] can be
 % divided into integer powers of two
-%%
 
 %%
 %initialization parameters
 
 %degree of polynomial
 %n = 3;
-     
 S_POT = log2(S)+1;
 
 interval_size = b-a;
@@ -39,12 +37,6 @@ AB_POT = flipud(AB_POT);
 AB_POT
 %%
 %function to approximate(tanh in this case)
-
-% Y = zeros(S,pts);
-% for i=1:S
-%     x = linspace(AB(i,1), AB(i,2),pts);
-%     Y(i,1:pts) = tanh(x);
-% end
 
 Y_POT = zeros(S_POT,pts);
 for i=1:S_POT

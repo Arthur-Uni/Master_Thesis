@@ -53,6 +53,11 @@ p_sym = sum(c .* subs(T_ks, (x*(b-a)+a)));
 p_sym = expand(p_sym);
 
 c_poly_temp = double(coeffs(p_sym, 'All'));
+% debuggin purposes
+c_temp = abs(c_poly_temp) > 16;
+if(nnz(c_temp) ~= 0)
+    warning('foo');
+end
 
 %quantization
 c_poly = fi(c_poly_temp, true, wordlength, fract); %format: [cn,...,c0]

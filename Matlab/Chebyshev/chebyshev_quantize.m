@@ -5,9 +5,9 @@
 
 %%
 %cleanup
-%clear;
+clear;
 clc;
-%close all;
+close all;
 
 %%
 %initialization parameters
@@ -16,7 +16,7 @@ clc;
 %n = 3;
 
 %number of segments
-S = 2;      % needs to be a power of two such that interval [a,b] can be
+S = 4;      % needs to be a power of two such that interval [a,b] can be
             % divided into integer powers of two
 S_POT = log2(S)+1;
 
@@ -38,11 +38,8 @@ end
 %combine a and b in matrix AB
 AB_POT = zeros(S_POT,2);
 
-%plotting points in interval [a,b]
-Dots_POT = zeros(S_POT,pts);
-
 %plotting parameters
-width = 1;
+width = 1.5;
 
 %%
 %create matrices for intervals to the power of two in [a,b] and save boundaries of
@@ -50,13 +47,11 @@ width = 1;
 for i=1:S_POT
     AB_POT(i,1) = floor(S/(2^i)) * max_step_size;
     AB_POT(i,2) = S/(2^(i-1)) * max_step_size;
-    Dots_POT(i,1:100) = linspace(AB_POT(i,1), AB_POT(i,2), pts);
 end
 
 %flip matrices upside down
 AB_POT = flipud(AB_POT);
-Dots_POT = flipud(Dots_POT);
-
+AB_POT
 %%
 %function to approximate(tanh in this case)
 
@@ -121,7 +116,7 @@ for n=min_degree:max_degree
 end
 
 %2D
-figure(2)
+figure(1)
 
 subplot(4,1,1);
 p1 = plot(N, max_abs_error, 'LineWidth', width);
@@ -207,3 +202,30 @@ end
 % xlabel('memory utilization in number of bits');
 % ylabel('computational effort in degree of polynomial');
 % zlabel('max absolute error');
+
+%%
+% find pareto optimal points over all values
+M = max_abs_error;
+P = cheb_pareto(M, N, C);
+
+% remove values from M, N and C which are zero
+Ones = P>0;
+
+M_pareto = Ones .* M;
+N_pareto = Ones .* N;
+C_pareto = Ones .* C;
+
+M_pareto(M_pareto==0) = [];
+N_pareto(N_pareto==0) = [];
+C_pareto(C_pareto==0) = [];
+
+%%
+%plot
+
+% pareto optimized points
+figure(2)
+s_pareto = scatter(C_pareto, M_pareto, 75, 'x', 'LineWidth', 2.5);
+
+% non pareto optimized points
+figure(3)
+s = scatter(C(:), M(:), 75, 'x', 'r', 'LineWidth', 2.5);

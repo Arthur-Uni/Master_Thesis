@@ -5,9 +5,9 @@
 
 %%
 %cleanup
-%clear;
+clear;
 clc;
-%close all;
+close all;
 
 %%
 %initialization parameters
@@ -33,28 +33,37 @@ if(mod(b-a, 2) ~= 0)
 end
 %interval_size = (b-a)/S;
 
+%%
+% quantize final result, quantize intermediate result of horner scheme
+% multiplication and addition, obtained coefficients are quantized and 
+% inputs are quantized
+
+%%
+%initialization parameters
+
+interval_size = b-a;
+max_step_size = interval_size / S;
+
+if(mod(b-a, 2) ~= 0)
+    error('interval size is not a power of two');
+end
+
 %combine a and b in matrix AB
 AB_POT = zeros(S_POT,2);
 
-%plotting points in interval [a,b]
-Dots_POT = zeros(S_POT,pts);
-
-%plotting parameters
 width = 1.5;
 
 %%
 %create matrices for intervals to the power of two in [a,b] and save boundaries of
 %each segment in matrix AB
 for i=1:S_POT
-    AB_POT(i,1) = floor(S/(2^i));
-    AB_POT(i,2) = S/(2^(i-1));
-    Dots_POT(i,1:100) = linspace(AB_POT(i,1), AB_POT(i,2), pts);
+    AB_POT(i,1) = floor(S/(2^i)) * max_step_size;
+    AB_POT(i,2) = S/(2^(i-1)) * max_step_size;
 end
 
 %flip matrices upside down
 AB_POT = flipud(AB_POT);
-Dots_POT = flipud(Dots_POT);
-
+AB_POT
 %%
 %function to approximate(tanh in this case)
 
@@ -69,14 +78,13 @@ for i=1:S_POT
     x = linspace(AB_POT(i,1), AB_POT(i,2),pts);
     Y_POT(i,1:pts) = tanh(x);
 end
-
 %%
 %parameters
-max_degree = 10;
+max_degree = 5;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
-min_word = 4;
+min_word = 8;
 max_word = 32;
 word_size = ((max_word-min_word)/2) + 1;        %number of word steps
 step_size = 2;
@@ -87,13 +95,13 @@ Coeffs = zeros(degree_size,word_size);          %number of coefficients
 N = zeros(degree_size,word_size);               %memory utilization
 C = zeros(degree_size,word_size);               %computational effort
                                                 
-P_POT = zeros(S_POT,pts);                       %matrix storing polynomial 
+P_POT = zeros(S_POT,pts);                           %matrix storing polynomial 
                                                 %approximation values
                                                 %calculated for each
                                                 %segment
                                                 
 coeff_wordlength = 16;
-coeff_fractionlength = coeff_wordlength - 2;
+coeff_fractionlength = coeff_wordlength - 4;
 
 input_wordlength = 16;
 input_fractionlength = input_wordlength - 1;
@@ -107,9 +115,15 @@ end
 for n=min_degree:max_degree
     i = 1;
     for temp_wordlength = min_word:step_size:max_word
-        temp_fractionlength = temp_wordlength-1;
+        if(n >= 3)
+            temp_fractionlength = temp_wordlength - 4;
+        elseif(n >= 5)
+            temp_fractionlength = temp_wordlength - 5;
+        else
+            temp_fractionlength = temp_wordlength - 3; 
+        end
         for k=1:S_POT
-            P_POT(k,1:pts) = cheb_horner_quantized(AB_POT(k,1), AB_POT(k,2),...
+            P_POT(k,1:pts) = cheb_horner_quantized(S, AB_POT(k,1), AB_POT(k,2),...
                 n, temp_wordlength, temp_fractionlength, coeff_wordlength, coeff_fractionlength,...
                 input_wordlength, input_fractionlength);
         end
@@ -122,13 +136,15 @@ for n=min_degree:max_degree
         i = i+1;
     end
 end
+
+M = max_abs_error;
 %%
 %plots
 
 %2D
 figure(1)
 
-subplot(4,1,1);
+subplot(2,1,1);
 p1 = plot(N, max_abs_error, 'LineWidth', width);
 xlabel('# of memory bits');
 ylabel('max abs error');
@@ -141,7 +157,7 @@ for iter=1:word_size
 end
 legend(Legend);
 
-subplot(4,1,2);
+subplot(2,1,2);
 p2 = plot(N, mean_squ_error, 'LineWidth', width);
 xlabel('# of memory bits');
 ylabel('mean squared error');
@@ -154,7 +170,8 @@ for iter=1:word_size
 end
 legend(Legend);
 
-subplot(4,1,3);
+figure(2);
+subplot(2,1,1);
 p3 = plot(C, max_abs_error, 'LineWidth', width);
 xlabel('computational effort');
 ylabel('max abs error');
@@ -167,7 +184,7 @@ for iter=1:word_size
 end
 legend(Legend);
 
-subplot(4,1,4);
+subplot(2,1,2);
 p4 = plot(C, mean_squ_error, 'LineWidth', width);
 xlabel('computational effort');
 ylabel('mean squared error');

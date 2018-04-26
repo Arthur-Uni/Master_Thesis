@@ -76,7 +76,7 @@ max_degree = 10;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
-min_word = 8;
+min_word = 4;
 max_word = 32;
 word_size = ((max_word-min_word)/2) + 1;        %number of word steps
 step_size = 2;
@@ -91,6 +91,13 @@ P_POT = zeros(S_POT,pts);                       %matrix storing polynomial
                                                 %approximation values
                                                 %calculated for each
                                                 %segment
+                                                
+coeff_wordlength = 16;
+coeff_fractionlength = coeff_wordlength - 2;
+
+input_wordlength = 16;
+input_fractionlength = input_wordlength - 1;
+                                                
 if(min_degree ~= 1)
     temp = min_degree-1;
 else
@@ -99,17 +106,19 @@ end
 %%                                            
 for n=min_degree:max_degree
     i = 1;
-    for wordlength = min_word:step_size:max_word
-        var = wordlength-2;
+    for temp_wordlength = min_word:step_size:max_word
+        temp_fractionlength = temp_wordlength-1;
         for k=1:S_POT
-            P_POT(k,1:pts) = cheb_horner_quantized(AB_POT(k,1), AB_POT(k,2), n, wordlength, var);
+            P_POT(k,1:pts) = cheb_horner_quantized(AB_POT(k,1), AB_POT(k,2),...
+                n, temp_wordlength, temp_fractionlength, coeff_wordlength, coeff_fractionlength,...
+                input_wordlength, input_fractionlength);
         end
         abs_error = max(abs(Y_POT(:)-P_POT(:)));
         max_abs_error(n - temp, i) = abs_error;
         mean_squ_error(n - temp, i) = immse(double(Y_POT), double(P_POT));
         Coeffs(n - temp, i) = (n+1)*S_POT;
-        N(n - temp, i) = Coeffs(n - temp)*8; % 16 = wordlength of coefficients
-        C(n - temp, i) = 2*n*wordlength;      % number of operations * wordlength = computational effort
+        N(n - temp, i) = Coeffs(n - temp)*coeff_wordlength;
+        C(n - temp, i) = 2*n*(temp_wordlength + coeff_wordlength + input_wordlength);
         i = i+1;
     end
 end
@@ -207,24 +216,22 @@ end
 
 %%
 % pareto optimization
-M = max_abs_error;
-
-P = cheb_pareto(M, N, C);
-
-Ones = P>0;
-
-M_pareto = Ones .* M;
-N_pareto = Ones .* N;
-C_pareto = Ones .* C;
-
-M_pareto(M_pareto==0) = [];
-N_pareto(N_pareto==0) = [];
-C_pareto(C_pareto==0) = [];
-
-figure(2)
-s_pareto = scatter(C_pareto, M_pareto, 75, '*', 'LineWidth', 2.5);
-%s_pareto = scatter(N_pareto, M_pareto, 75, '*', 'LineWidth', 2.5);
-
-figure(3)
-s = scatter(C(:), M(:), 75, '*', 'r', 'LineWidth', 2.5);
-%s = scatter(N(:), M(:), 75, '*', 'r', 'LineWidth', 2.5);
+% M = max_abs_error;
+% 
+% P = cheb_pareto(M, N, C);
+% 
+% Ones = P>0;
+% 
+% M_pareto = Ones .* M;
+% N_pareto = Ones .* N;
+% C_pareto = Ones .* C;
+% 
+% M_pareto(M_pareto==0) = [];
+% N_pareto(N_pareto==0) = [];
+% C_pareto(C_pareto==0) = [];
+% 
+% figure(2)
+% s_pareto = scatter(C_pareto, N_pareto, 75, '*', 'LineWidth', 2.5);
+% 
+% figure(3)
+% s = scatter(C(:), N(:), 75, '*', 'r', 'LineWidth', 2.5);

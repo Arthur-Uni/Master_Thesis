@@ -1,4 +1,4 @@
-function [ M, N, C ] = cheb_quantized_segmentation( S )
+function [ N, M, C ] = cheb_quantized_segmentation( S )
 %%
 %paramter
 % input S, integer, number of segments
@@ -31,7 +31,7 @@ pts = 100;
 %interval [a,b]: length must be a power of two so that the interval can be
 %divided into powers of two
 a = 0;
-b = 4;
+b = 8;
 
 if(mod(b-a, 2) ~= 0)
     error('interval size is not a power of two');
@@ -81,7 +81,7 @@ max_degree = 10;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
-min_word = 8;
+min_word = 4;
 max_word = 32;
 word_size = ((max_word-min_word)/2) + 1;        %number of word steps
 step_size = 2;
@@ -89,13 +89,20 @@ step_size = 2;
 max_abs_error = zeros(degree_size,word_size);
 mean_squ_error = zeros(degree_size,word_size);
 Coeffs = zeros(degree_size,word_size);          %number of coefficients
-N = zeros(degree_size,word_size);               %memory utilization
+M = zeros(degree_size,word_size);               %memory utilization
 C = zeros(degree_size,word_size);               %computational effort
                                                 
 P_POT = zeros(S_POT,pts);                       %matrix storing polynomial 
                                                 %approximation values
                                                 %calculated for each
                                                 %segment
+                                                
+coeff_wordlength = 16;
+coeff_fractionlength = coeff_wordlength - 2;
+
+input_wordlength = 16;
+input_fractionlength = input_wordlength - 1;
+                                                
 if(min_degree ~= 1)
     temp = min_degree-1;
 else
@@ -104,22 +111,24 @@ end
 %%                                            
 for n=min_degree:max_degree
     i = 1;
-    for wordlength = min_word:step_size:max_word
-        var = wordlength-2;
+    for temp_wordlength = min_word:step_size:max_word
+        temp_fractionlength = temp_wordlength-1;
         for k=1:S_POT
-            P_POT(k,1:pts) = cheb_horner_quantized(AB_POT(k,1), AB_POT(k,2), n, wordlength, var);
+            P_POT(k,1:pts) = cheb_horner_quantized(AB_POT(k,1), AB_POT(k,2),...
+                n, temp_wordlength, temp_fractionlength, coeff_wordlength, coeff_fractionlength,...
+                input_wordlength, input_fractionlength);
         end
         abs_error = max(abs(Y_POT(:)-P_POT(:)));
         max_abs_error(n - temp, i) = abs_error;
         mean_squ_error(n - temp, i) = immse(double(Y_POT), double(P_POT));
         Coeffs(n - temp, i) = (n+1)*S_POT;
-        N(n - temp, i) = Coeffs(n - temp)*16;
-        C(n - temp, i) = 2*n*wordlength;    % number of operations * wordlength = computational effort
+        M(n - temp, i) = Coeffs(n - temp)*coeff_wordlength;
+        C(n - temp, i) = 2*n*(temp_wordlength + coeff_wordlength + input_wordlength);
         i = i+1;
     end
 end
 
-M = max_abs_error;
+N = max_abs_error;
 
 end
 

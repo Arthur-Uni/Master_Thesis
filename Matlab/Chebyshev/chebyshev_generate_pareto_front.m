@@ -30,8 +30,8 @@ C_pareto(C_pareto==0) = [];
 
 % pareto optimized points
 figure(1)
-s_pareto = scatter(C_pareto, M_pareto, 75, '*', 'LineWidth', 2.5);
+s_pareto = scatter(C_pareto, M_pareto, 75, 'x', 'LineWidth', 2.5);
 
 % non pareto optimized points
 figure(2)
-s = scatter(C(:), M(:), 75, '*', 'r', 'LineWidth', 2.5);
+s = scatter(C(:), M(:), 75, 'x', 'r', 'LineWidth', 2.5);

@@ -16,7 +16,7 @@ clc;
 %n = 3;
 
 %number of segments
-S = 4;      % needs to be a power of two such that interval [a,b] can be
+S = 2;      % needs to be a power of two such that interval [a,b] can be
             % divided into integer powers of two
 S_POT = log2(S)+1;
 
@@ -76,16 +76,17 @@ max_degree = 10;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
-min_word = 8;
+min_word = 4;
 max_word = 32;
 word_size = ((max_word-min_word)/2) + 1;        %number of word steps
 step_size = 2;
 
 max_abs_error = zeros(degree_size,word_size);
 mean_squ_error = zeros(degree_size,word_size);
-C = zeros(degree_size,word_size);               %number of coefficients
+Coeffs = zeros(degree_size,word_size);          %number of coefficients
 N = zeros(degree_size,word_size);               %memory utilization
-                                                
+C = zeros(degree_size,word_size);               %computational effort
+
 P_POT = zeros(S_POT,pts);                       %matrix storing polynomial 
                                                 %approximation values
                                                 %calculated for each
@@ -101,24 +102,27 @@ end
 %%                                            
 for n=min_degree:max_degree
     i = 1;
-    for wordlength = min_word:step_size:max_word
-        var = wordlength-2;
+    for temp_wordlength = min_word:step_size:max_word
+        var = temp_wordlength-1;
         for k=1:S_POT
-            P_POT(k,1:pts) = cheb_horner(AB_POT(k,1), AB_POT(k,2), n, q_en, wordlength, var);
+            P_POT(k,1:pts) = cheb_horner(AB_POT(k,1), AB_POT(k,2), n, q_en,...
+                temp_wordlength, var);
         end
         abs_error = max(abs(Y_POT(:)-P_POT(:)));
         max_abs_error(n - temp, i) = abs_error;
         mean_squ_error(n - temp, i) = immse(double(Y_POT), double(P_POT));
-        C(n - temp, i) = (n+1)*S_POT;
-        N(n - temp, i) = C(n - temp)*wordlength;
+        Coeffs(n - temp, i) = (n+1)*S_POT;
+        N(n - temp, i) = Coeffs(n - temp)*32; % 32 = wordlength of not quantized coefficients
+        C(n - temp, i) = 2*n*(temp_wordlength + 32 + 32); % number of operations * wordlength(quantized output + coefficients + inputs) = computational effort
         i = i+1;
     end
 end
 
-figure(1)
+%2D
+figure(2)
 
-subplot(2,1,1);
-p1 = plot(N, max_abs_error, 'b', 'linewidth', width);
+subplot(4,1,1);
+p1 = plot(N, max_abs_error, 'LineWidth', width);
 xlabel('# of memory bits');
 ylabel('max abs error');
 hold on;
@@ -130,12 +134,38 @@ for iter=1:word_size
 end
 legend(Legend);
 
-subplot(2,1,2);
-p2 = plot(N, mean_squ_error, 'b', 'linewidth', width);
+subplot(4,1,2);
+p2 = plot(N, mean_squ_error, 'LineWidth', width);
 xlabel('# of memory bits');
 ylabel('mean squared error');
 hold on;
-grid on
+grid on;
+
+Legend = cell(word_size,1);
+for iter=1:word_size
+    Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
+end
+legend(Legend);
+
+subplot(4,1,3);
+p3 = plot(C, max_abs_error, 'LineWidth', width);
+xlabel('computational effort');
+ylabel('max abs error');
+hold on;
+grid on;
+
+Legend = cell(word_size,1);
+for iter=1:word_size
+    Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
+end
+legend(Legend);
+
+subplot(4,1,4);
+p4 = plot(C, mean_squ_error, 'LineWidth', width);
+xlabel('computational effort');
+ylabel('mean squared error');
+hold on;
+grid on;
 
 Legend = cell(word_size,1);
 for iter=1:word_size

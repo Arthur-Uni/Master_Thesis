@@ -118,7 +118,7 @@ end
 %2D
 figure(1)
 
-subplot(4,1,1);
+subplot(2,1,1);
 p1 = plot(N, max_abs_error, 'LineWidth', width);
 xlabel('# of memory bits');
 ylabel('max abs error');
@@ -131,7 +131,7 @@ for iter=1:word_size
 end
 legend(Legend);
 
-subplot(4,1,2);
+subplot(2,1,2);
 p2 = plot(N, mean_squ_error, 'LineWidth', width);
 xlabel('# of memory bits');
 ylabel('mean squared error');
@@ -144,7 +144,8 @@ for iter=1:word_size
 end
 legend(Legend);
 
-subplot(4,1,3);
+figure(2);
+subplot(2,1,1);
 p3 = plot(C, max_abs_error, 'LineWidth', width);
 xlabel('computational effort');
 ylabel('max abs error');
@@ -157,7 +158,7 @@ for iter=1:word_size
 end
 legend(Legend);
 
-subplot(4,1,4);
+subplot(2,1,2);
 p4 = plot(C, mean_squ_error, 'LineWidth', width);
 xlabel('computational effort');
 ylabel('mean squared error');
@@ -205,27 +206,27 @@ end
 
 %%
 % find pareto optimal points over all values
-M = max_abs_error;
-P = cheb_pareto(M, N, C);
-
-% remove values from M, N and C which are zero
-Ones = P>0;
-
-M_pareto = Ones .* M;
-N_pareto = Ones .* N;
-C_pareto = Ones .* C;
-
-M_pareto(M_pareto==0) = [];
-N_pareto(N_pareto==0) = [];
-C_pareto(C_pareto==0) = [];
-
-%%
-%plot
-
-% pareto optimized points
-figure(2)
-s_pareto = scatter(C_pareto, M_pareto, 75, 'x', 'LineWidth', 2.5);
-
-% non pareto optimized points
-figure(3)
-s = scatter(C(:), M(:), 75, 'x', 'r', 'LineWidth', 2.5);
+% M = max_abs_error;
+% P = cheb_pareto(M, N, C);
+% 
+% % remove values from M, N and C which are zero
+% Ones = P>0;
+% 
+% M_pareto = Ones .* M;
+% N_pareto = Ones .* N;
+% C_pareto = Ones .* C;
+% 
+% M_pareto(M_pareto==0) = [];
+% N_pareto(N_pareto==0) = [];
+% C_pareto(C_pareto==0) = [];
+% 
+% %%
+% %plot
+% 
+% % pareto optimized points
+% figure(2)
+% s_pareto = scatter(C_pareto, M_pareto, 75, 'x', 'LineWidth', 2.5);
+% 
+% % non pareto optimized points
+% figure(3)
+% s = scatter(C(:), M(:), 75, 'x', 'r', 'LineWidth', 2.5);

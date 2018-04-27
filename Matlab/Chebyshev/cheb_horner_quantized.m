@@ -24,7 +24,7 @@ dots = fi(dots, true, input_wordlength,input_fractionlength);
 
 % get Chebyshev polynomial approximation coefficients
 c_q = cheb_poly_coeffs_quantized(a,b,n,coeff_wordlength,coeff_fractionlength);
-c_q
+% c_q
 c = cheb_poly_coeffs(a,b,n);
 c = fi(c, true, 32, 28);
 
@@ -40,7 +40,7 @@ temp(:) = c_q(1);
 for i=2:l
     temp = temp.*dots + c_q(i);
     % debugging purposes
-    t_temp = abs(temp) > 16;
+    t_temp = abs(temp) > 1.5;
     if(nnz(t_temp) ~= 0 )
         warning('bar');
     end
@@ -57,7 +57,7 @@ end
 
 %%
 % quantize the final result to have an output of wordlength bits
-temp = fi(temp, true, temp_wordlength + 8, temp_fract + 8);
+temp = fi(temp, true, temp_wordlength, temp_fract);
 
 y = temp;
 

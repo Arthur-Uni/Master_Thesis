@@ -16,7 +16,7 @@ close all;
 %n = 3;
 
 %number of segments
-S = 2;      % needs to be a power of two such that interval [a,b] can be
+S = 4;      % needs to be a power of two such that interval [a,b] can be
             % divided into integer powers of two
 S_POT = log2(S)+1;
 
@@ -80,12 +80,12 @@ for i=1:S_POT
 end
 %%
 %parameters
-max_degree = 5;
+max_degree = 7;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
 min_word = 8;
-max_word = 32;
+max_word = 16;
 word_size = ((max_word-min_word)/2) + 1;        %number of word steps
 step_size = 2;
 
@@ -100,10 +100,10 @@ P_POT = zeros(S_POT,pts);                           %matrix storing polynomial
                                                 %calculated for each
                                                 %segment
                                                 
-coeff_wordlength = 16;
-coeff_fractionlength = coeff_wordlength - 4;
+coeff_wordlength = 8;
+coeff_fractionlength = coeff_wordlength - 2;
 
-input_wordlength = 16;
+input_wordlength = 6;
 input_fractionlength = input_wordlength - 1;
                                                 
 if(min_degree ~= 1)
@@ -115,13 +115,14 @@ end
 for n=min_degree:max_degree
     i = 1;
     for temp_wordlength = min_word:step_size:max_word
-        if(n >= 3)
-            temp_fractionlength = temp_wordlength - 4;
-        elseif(n >= 5)
-            temp_fractionlength = temp_wordlength - 5;
-        else
-            temp_fractionlength = temp_wordlength - 3; 
-        end
+%         if(n >= 3)
+%             temp_fractionlength = temp_wordlength - 4;
+%         elseif(n >= 5)
+%             temp_fractionlength = temp_wordlength - 5;
+%         else
+%             temp_fractionlength = temp_wordlength - 3; 
+%         end
+        temp_fractionlength = temp_wordlength - 2;
         for k=1:S_POT
             P_POT(k,1:pts) = cheb_horner_quantized(S, AB_POT(k,1), AB_POT(k,2),...
                 n, temp_wordlength, temp_fractionlength, coeff_wordlength, coeff_fractionlength,...

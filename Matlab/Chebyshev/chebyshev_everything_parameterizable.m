@@ -5,6 +5,10 @@ close all;
 
 %%
 % parameters
+
+% set global fimath settings
+globalfimath('OverflowAction','Saturate','RoundingMethod','Round');
+
 S = 4;
 
 a = 0;
@@ -12,12 +16,12 @@ b = 4;
 
 pts = 100;
 
-max_degree = 3;
+max_degree = 10;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
 min_word = 4;
-max_word = 8;
+max_word = 16;
 word_size = ((max_word-min_word)/2) + 1;        %number of word steps
 step_size = 2;
 
@@ -26,7 +30,7 @@ coeff_max_word = 16;
 coeffs_wordsize = coeff_max_word-coeff_min_word + 1;
 
 input_min_word = 2;
-input_max_word = 8;
+input_max_word = 12;
 input_wordsize = input_max_word-input_min_word + 1;
 
 total_results_size = word_size * coeffs_wordsize * input_wordsize; 

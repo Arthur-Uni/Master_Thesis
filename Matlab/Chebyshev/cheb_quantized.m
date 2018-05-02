@@ -32,7 +32,7 @@ end
 
 %flip matrices upside down
 AB_POT = flipud(AB_POT);
-AB_POT
+%AB_POT
 
 %%
 % function to approximate(tanh in this case)

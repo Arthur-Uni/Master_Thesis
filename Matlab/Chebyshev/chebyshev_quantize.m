@@ -12,11 +12,14 @@ close all;
 %%
 %initialization parameters
 
+% set global fimath settings
+globalfimath('OverflowAction','Saturate','RoundingMethod','Round')
+
 %degree of polynomial
 %n = 3;
 
 %number of segments
-S = 4;      % needs to be a power of two such that interval [a,b] can be
+S = 1;      % needs to be a power of two such that interval [a,b] can be
             % divided into integer powers of two
 S_POT = log2(S)+1;
 
@@ -55,17 +58,36 @@ AB_POT
 %%
 %function to approximate(tanh in this case)
 
-% Y = zeros(S,pts);
-% for i=1:S
-%     x = linspace(AB(i,1), AB(i,2),pts);
-%     Y(i,1:pts) = tanh(x);
-% end
-
 Y_POT = zeros(S_POT,pts);
 for i=1:S_POT
     x = linspace(AB_POT(i,1), AB_POT(i,2),pts);
     Y_POT(i,1:pts) = tanh(x);
 end
+
+%%
+% uncomment this section for 2 segments if you want to see all
+% approximations
+
+% Y1_POT = Y_POT(1,1:pts-1);
+% Y2_POT = Y_POT(2,1:pts);
+% Y_POT = [Y1_POT,Y2_POT];
+% 
+% 
+% hold on;
+% figure(3);
+% plot(linspace(a,b,S_POT*pts-1), Y_POT, 'LineWidth', width);
+
+%%
+% uncomment this section for 3 segments if you want to see all
+% approximations
+% Y1_POT = Y_POT(1,1:pts-1);
+% Y2_POT = Y_POT(2,1:pts-1);
+% Y3_POT = Y_POT(3,1:pts);
+% Y_POT = [Y1_POT, Y2_POT, Y3_POT];
+
+% hold on;
+% figure(3);
+% plot(linspace(a,b,S_POT*pts-2), Y_POT, 'LineWidth', width);
 
 %%
 %parameters
@@ -96,6 +118,7 @@ if(min_degree ~= 1)
 else
     temp = 0;
 end
+
 %%                                            
 for n=min_degree:max_degree
     i = 1;
@@ -105,6 +128,28 @@ for n=min_degree:max_degree
             P_POT(k,1:pts) = cheb_horner(AB_POT(k,1), AB_POT(k,2), n, q_en,...
                 temp_wordlength, var);
         end
+%%
+% uncomment this for 2 segments
+%         P1_POT = P_POT(1,1:pts-1);
+%         P2_POT = P_POT(2,1:pts);
+%         P_POT = [P1_POT,P2_POT];
+%         
+%         hold on;
+%         figure(3)
+%         approx = plot(linspace(a,b,S_POT*pts-1), P_POT);
+
+%%
+% uncomment this section for 3 segments
+%         P1_POT = P_POT(1,1:pts-1);
+%         P2_POT = P_POT(2,1:pts-1);
+%         P3_POT = P_POT(3,1:pts);
+%         P_POT = [P1_POT,P2_POT, P3_POT];
+
+%         hold on;
+%         figure(3)
+%         approx = plot(linspace(a,b,S_POT*pts-2), P_POT);
+%%  
+        
         abs_error = max(abs(Y_POT(:)-P_POT(:)));
         max_abs_error(n - temp, i) = abs_error;
         mean_squ_error(n - temp, i) = immse(double(Y_POT), double(P_POT));
@@ -112,11 +157,15 @@ for n=min_degree:max_degree
         N(n - temp, i) = Coeffs(n - temp)*32; % 32 = wordlength of not quantized coefficients
         C(n - temp, i) = 2*n*(temp_wordlength + 32 + 32); % number of operations * wordlength(quantized output + coefficients + inputs) = computational effort
         i = i+1;
+        
+        hold on;
+        figure(3)
+        plot(linspace(a,b,S_POT*pts), P_POT);
     end
 end
 
 %2D
-figure(1)
+figure(9)
 
 subplot(2,1,1);
 p1 = plot(N, max_abs_error, 'LineWidth', width);
@@ -144,7 +193,7 @@ for iter=1:word_size
 end
 legend(Legend);
 
-figure(2);
+figure(10);
 subplot(2,1,1);
 p3 = plot(C, max_abs_error, 'LineWidth', width);
 xlabel('computational effort');

@@ -25,22 +25,20 @@ dots = fi(dots, true, input_wordlength,input_fractionlength);
 % get Chebyshev polynomial approximation coefficients
 c_q = cheb_poly_coeffs_quantized(a,b,n,coeff_wordlength,coeff_fractionlength);
 % c_q
-c = cheb_poly_coeffs(a,b,n);
-c = fi(c, true, 32, 28);
+% c = cheb_poly_coeffs(a,b,n);
 
 %%
 % Horner scheme
 k = length(dots);
 l = length(c_q);
-%temp = ones(1,k);
-temp = fi(ones(1,k), true, temp_wordlength, temp_fract, 'RoundingMethod', 'Round');
-temp(:) = c_q(1);
-
+temp = ones(1,k);
+temp = temp .* c_q(1);
+temp = fi(temp, true, temp_wordlength + coeff_wordlength, temp_wordlength + coeff_wordlength - 11);
 
 for i=2:l
     temp = temp.*dots + c_q(i);
     % debugging purposes
-    t_temp = abs(temp) > 1.5;
+    t_temp = abs(temp) > 1023.99;
     if(nnz(t_temp) ~= 0 )
         warning('bar');
     end
@@ -48,7 +46,7 @@ for i=2:l
     % quantize temporary result so that wordlength of multiply and add
     % operation does not grow indefinitely
     if(S < 4)
-        temp = fi(temp, true, temp_wordlength + coeff_wordlength, (temp_wordlength + coeff_wordlength)-6);
+        temp = fi(temp, true, temp_wordlength + coeff_wordlength, temp_wordlength + coeff_wordlength - 11);
     else
         temp = fi(temp, true, temp_wordlength + coeff_wordlength, (temp_wordlength + coeff_wordlength)-2);
     end
@@ -57,7 +55,7 @@ end
 
 %%
 % quantize the final result to have an output of wordlength bits
-temp = fi(temp, true, temp_wordlength, temp_fract);
+temp = fi(temp, 1, temp_wordlength, temp_fract);
 
 y = temp;
 

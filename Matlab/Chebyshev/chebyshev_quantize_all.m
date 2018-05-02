@@ -19,7 +19,7 @@ globalfimath('OverflowAction','Saturate','RoundingMethod','Round')
 %n = 3;
 
 %number of segments
-S = 2;      % needs to be a power of two such that interval [a,b] can be
+S = 1;      % needs to be a power of two such that interval [a,b] can be
             % divided into integer powers of two
 S_POT = log2(S)+1;
 
@@ -125,7 +125,7 @@ P_POT = zeros(S_POT,pts);                           %matrix storing polynomial
                                                 %segment
                                                 
 coeff_wordlength = 32;
-coeff_fractionlength = coeff_wordlength - 11;
+% coeff_fractionlength = coeff_wordlength - 11;
 
 input_wordlength = 32;
 input_fractionlength = input_wordlength - 1;
@@ -138,6 +138,7 @@ end
 
 %%                                            
 for n=min_degree:max_degree
+    coeff_fractionlength = coeffs_setup(S, n, coeff_wordlength);
     i = 1;
     for temp_wordlength = min_word:step_size:max_word
         temp_fractionlength = temp_wordlength - 1;

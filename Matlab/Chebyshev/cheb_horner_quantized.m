@@ -35,21 +35,20 @@ temp = ones(1,k);
 temp = temp .* c_q(1);
 temp = fi(temp, true, temp_wordlength + coeff_wordlength, temp_wordlength + coeff_wordlength - 11);
 
+horner_wordlength = temp_wordlength + coeff_wordlength;
+horner_fractionlength = horner_setup(S,n, horner_wordlength);
+
 for i=2:l
     temp = temp.*dots + c_q(i);
     % debugging purposes
-    t_temp = abs(temp) > 1023.99;
-    if(nnz(t_temp) ~= 0 )
-        warning('bar');
-    end
+%     t_temp = abs(temp) > 255.99;
+%     if(nnz(t_temp) ~= 0 )
+%         warning('bar');
+%     end
     
     % quantize temporary result so that wordlength of multiply and add
     % operation does not grow indefinitely
-    if(S < 4)
-        temp = fi(temp, true, temp_wordlength + coeff_wordlength, temp_wordlength + coeff_wordlength - 11);
-    else
-        temp = fi(temp, true, temp_wordlength + coeff_wordlength, (temp_wordlength + coeff_wordlength)-2);
-    end
+    temp = fi(temp, true, horner_wordlength, horner_fractionlength);
     %temp = fi(temp, true, 32, 31);
 end
 

@@ -32,7 +32,6 @@ i= 1;
 for w = min_word:step_size:max_word
     y = t;
     t = fi(t, true, 32, 32-1);
-    error = t - temp;
     y = fi(y, true, w, w-1);
     abs_error = max((abs(t-y)));
     max_abs_error_Y(i, 1) = abs_error;

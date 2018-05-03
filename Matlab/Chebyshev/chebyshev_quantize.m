@@ -5,9 +5,9 @@
 
 %%
 %cleanup
-clear;
+% clear;
 clc;
-close all;
+% close all;
 
 %%
 %initialization parameters
@@ -91,7 +91,7 @@ end
 
 %%
 %parameters
-max_degree = 10;
+max_degree = 50;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
@@ -157,10 +157,6 @@ for n=min_degree:max_degree
         N(n - temp, i) = Coeffs(n - temp)*32; % 32 = wordlength of not quantized coefficients
         C(n - temp, i) = 2*n*(temp_wordlength + 32 + 32); % number of operations * wordlength(quantized output + coefficients + inputs) = computational effort
         i = i+1;
-        
-        hold on;
-        figure(3)
-        plot(linspace(a,b,S_POT*pts), P_POT);
     end
 end
 

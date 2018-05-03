@@ -25,12 +25,12 @@ max_word = 16;
 word_size = ((max_word-min_word)/2) + 1;        %number of word steps
 step_size = 2;
 
-coeff_min_word = 4;
+coeff_min_word = 8;
 coeff_max_word = 16;
 coeffs_wordsize = coeff_max_word-coeff_min_word + 1;
 
-input_min_word = 2;
-input_max_word = 12;
+input_min_word = 6;
+input_max_word = 16;
 input_wordsize = input_max_word-input_min_word + 1;
 
 total_results_size = word_size * coeffs_wordsize * input_wordsize; 
@@ -96,7 +96,7 @@ M_pareto2(M_pareto2==0) = [];
 C_pareto2(C_pareto2==0) = [];
 
 figure(1)
-s_pareto_1 = scatter(N_pareto2, M_pareto2, 75, 'x', 'LineWidth', 2.5);
+s_pareto_1 = scatter(N_pareto1, M_pareto1, 75, 'x', 'LineWidth', 2.5);
 
 figure(2)
 s_1 = scatter(N(:), M(:), 75, 'x', 'r', 'LineWidth', 2.5);

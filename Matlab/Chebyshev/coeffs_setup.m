@@ -47,7 +47,7 @@ switch S
             case 10
                 coeffs_fract = coeffs_wordlength - 5;
         end
-    case 3
+    case 4
         if(n == 1)
           coeffs_fract = coeffs_wordlength - 1;
         else

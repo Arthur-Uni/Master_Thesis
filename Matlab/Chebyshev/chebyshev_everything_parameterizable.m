@@ -16,7 +16,7 @@ b = 4;
 
 pts = 100;
 
-max_degree = 10;
+max_degree = 3;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
@@ -79,20 +79,30 @@ s_C = scatter(C(:), max_abs_error(:), 'x');
 % pareto optimization
 M = max_abs_error;
 
-P = cheb_pareto(M, N, C);
+P1 = cheb_pareto_v2(M, N);
+P2 = cheb_pareto_v2(M,C);
 
-Ones = P>0;
+Ones1 = P1>0;
+Ones2 = P2>0;
 
-M_pareto = Ones .* M;
-N_pareto = Ones .* N;
-C_pareto = Ones .* C;
+M_pareto1 = Ones1 .* M;
+N_pareto1 = Ones1 .* N;
+M_pareto2 = Ones2 .* M;
+C_pareto2 = Ones2 .* C;
 
-M_pareto(M_pareto==0) = [];
-N_pareto(N_pareto==0) = [];
-C_pareto(C_pareto==0) = [];
+M_pareto1(M_pareto1==0) = [];
+N_pareto1(N_pareto1==0) = [];
+M_pareto2(M_pareto2==0) = [];
+C_pareto2(C_pareto2==0) = [];
+
+figure(1)
+s_pareto_1 = scatter(N_pareto2, M_pareto2, 75, 'x', 'LineWidth', 2.5);
+
+figure(2)
+s_1 = scatter(N(:), M(:), 75, 'x', 'r', 'LineWidth', 2.5);
 
 figure(3)
-s_pareto = scatter(C_pareto, M_pareto, 75, 'x', 'LineWidth', 2.5);
+s_pareto_2 = scatter(C_pareto2, M_pareto2, 75, 'x', 'LineWidth', 2.5);
 
 figure(4)
-s = scatter(C(:), M(:), 75, 'x', 'r', 'LineWidth', 2.5);
+s_2 = scatter(C(:), M(:), 75, 'x', 'r', 'LineWidth', 2.5);

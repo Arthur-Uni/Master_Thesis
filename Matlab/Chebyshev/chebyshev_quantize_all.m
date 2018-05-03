@@ -19,7 +19,7 @@ globalfimath('OverflowAction','Saturate','RoundingMethod','Round')
 %n = 3;
 
 %number of segments
-S = 1;      % needs to be a power of two such that interval [a,b] can be
+S = 4;      % needs to be a power of two such that interval [a,b] can be
             % divided into integer powers of two
 S_POT = log2(S)+1;
 
@@ -55,6 +55,7 @@ end
 AB_POT = zeros(S_POT,2);
 
 width = 1.5;
+fontSize = 16;
 
 %%
 %create matrices for intervals to the power of two in [a,b] and save boundaries of
@@ -90,16 +91,28 @@ end
 % plot(linspace(a,b,S_POT*pts-1), Y_POT, 'LineWidth', width);
 
 %%
-% uncomment this section for 3 segments if you want to see all
-% approximations
-% Y1_POT = Y_POT(1,1:pts-1);
-% Y2_POT = Y_POT(2,1:pts-1);
+% % uncomment this section for 3 segments if you want to see all
+% % approximations
+% Y1_POT = Y_POT(1,1:pts);
+% Y2_POT = Y_POT(2,1:pts);
 % Y3_POT = Y_POT(3,1:pts);
 % Y_POT = [Y1_POT, Y2_POT, Y3_POT];
-
+% 
+% x1 = linspace(0,1,pts);
+% x2 = linspace(1,2,pts);
+% x3 = linspace(2,4,pts);
+% 
+% X = [x1, x2, x3];
+% 
+% % t1 = tanh(x1);
+% % t2 = tanh(x2);
+% % t3 = tanh(x3);
+% % 
+% % T = [t1,t2,t3];
+% 
 % hold on;
-% figure(3);
-% plot(linspace(a,b,S_POT*pts-2), Y_POT, 'LineWidth', width);
+% figure(6);
+% plot(X, Y_POT, 'LineWidth', width);
 
 
 %%
@@ -124,11 +137,8 @@ P_POT = zeros(S_POT,pts);                           %matrix storing polynomial
                                                 %calculated for each
                                                 %segment
                                                 
-coeff_wordlength = 32;
+coeff_wordlength = 16;
 % coeff_fractionlength = coeff_wordlength - 11;
-
-input_wordlength = 32;
-input_fractionlength = input_wordlength - 1;
                                                 
 if(min_degree ~= 1)
     temp = min_degree-1;
@@ -140,16 +150,15 @@ end
 for n=min_degree:max_degree
     coeff_fractionlength = coeffs_setup(S, n, coeff_wordlength);
     i = 1;
-    for temp_wordlength = min_word:step_size:max_word
-        temp_fractionlength = temp_wordlength - 1;
+    for input_wordlength = min_word:step_size:max_word
+        input_fractionlength = input_wordlength - 1;
         for k=1:S_POT
             P_POT(k,1:pts) = cheb_horner_quantized(S, AB_POT(k,1), AB_POT(k,2),...
-                n, temp_wordlength, temp_fractionlength, coeff_wordlength, coeff_fractionlength,...
-                input_wordlength, input_fractionlength);
+                n, coeff_wordlength, coeff_fractionlength, input_wordlength, input_fractionlength);
         end
 %%
 % uncomment this for 2 segments
-%         P1_POT = P_POT(1,1:pts-1);
+%         P1_POT = P_POT(1,1:pts);
 %         P2_POT = P_POT(2,1:pts);
 %         P_POT = [P1_POT,P2_POT];
 %         
@@ -159,21 +168,21 @@ for n=min_degree:max_degree
 
 %%
 % uncomment this section for 3 segments
-%         P1_POT = P_POT(1,1:pts-1);
-%         P2_POT = P_POT(2,1:pts-1);
+%         P1_POT = P_POT(1,1:pts);
+%         P2_POT = P_POT(2,1:pts);
 %         P3_POT = P_POT(3,1:pts);
 %         P_POT = [P1_POT,P2_POT, P3_POT];
-
+%         
 %         hold on;
-%         figure(3)
-%         approx = plot(linspace(a,b,S_POT*pts-2), P_POT);
+%         figure(6)
+%         approx = plot(X, P_POT);
 %%        
         abs_error = max(abs(Y_POT(:)-P_POT(:)));
         max_abs_error(n - temp, i) = abs_error;
         mean_squ_error(n - temp, i) = immse(double(Y_POT), double(P_POT));
         Coeffs(n - temp, i) = (n+1)*S_POT;
         N(n - temp, i) = Coeffs(n - temp)*coeff_wordlength;
-        C(n - temp, i) = 2*n*(temp_wordlength + coeff_wordlength + input_wordlength);
+        C(n - temp, i) = 2*n*(input_wordlength + coeff_wordlength);
         i = i+1;
     end
 end
@@ -187,8 +196,8 @@ figure(1)
 
 subplot(2,1,1);
 p1 = plot(N, max_abs_error, 'LineWidth', width);
-xlabel('# of memory bits');
-ylabel('max abs error');
+xlabel('# of memory bits', 'FontSize', fontSize);
+ylabel('max abs error', 'FontSize', fontSize);
 hold on;
 grid on;
 
@@ -200,8 +209,8 @@ legend(Legend);
 
 subplot(2,1,2);
 p2 = plot(N, mean_squ_error, 'LineWidth', width);
-xlabel('# of memory bits');
-ylabel('mean squared error');
+xlabel('# of memory bits', 'FontSize', fontSize);
+ylabel('mean squared error', 'FontSize', fontSize);
 hold on;
 grid on;
 
@@ -214,8 +223,8 @@ legend(Legend);
 figure(2);
 subplot(2,1,1);
 p3 = plot(C, max_abs_error, 'LineWidth', width);
-xlabel('computational effort');
-ylabel('max abs error');
+xlabel('computational effort', 'FontSize', fontSize);
+ylabel('max abs error', 'FontSize', fontSize);
 hold on;
 grid on;
 
@@ -227,8 +236,8 @@ legend(Legend);
 
 subplot(2,1,2);
 p4 = plot(C, mean_squ_error, 'LineWidth', width);
-xlabel('computational effort');
-ylabel('mean squared error');
+xlabel('computational effort', 'FontSize', fontSize);
+ylabel('mean squared error', 'FontSize', fontSize);
 hold on;
 grid on;
 
@@ -277,20 +286,27 @@ legend(Legend);
 % pareto optimization
 % M = max_abs_error;
 % 
-% P = cheb_pareto(M, N, C);
-% 
-% Ones = P>0;
-% 
-% M_pareto = Ones .* M;
-% N_pareto = Ones .* N;
-% C_pareto = Ones .* C;
-% 
-% M_pareto(M_pareto==0) = [];
-% N_pareto(N_pareto==0) = [];
-% C_pareto(C_pareto==0) = [];
-% 
-% figure(2)
-% s_pareto = scatter(C_pareto, N_pareto, 75, '*', 'LineWidth', 2.5);
-% 
-% figure(3)
-% s = scatter(C(:), N(:), 75, '*', 'r', 'LineWidth', 2.5);
+P = cheb_pareto_v2(M, C);
+
+Ones = P>0;
+
+M_pareto = Ones .* M;
+N_pareto = Ones .* N;
+C_pareto = Ones .* C;
+
+M_pareto(M_pareto==0) = [];
+N_pareto(N_pareto==0) = [];
+C_pareto(C_pareto==0) = [];
+
+figure(3)
+hold on;
+grid on;
+s = scatter(C(:), M(:), 50, 'x', 'LineWidth', 2.5);
+set(gca, 'FontSize', fontSize);
+xlabel('computational effort', 'FontSize', fontSize);
+ylabel('maximum absolute error', 'FontSize', fontSize);
+title('all points for computational effort');
+
+s_pareto = scatter(C_pareto, M_pareto, 75, 'x', 'LineWidth', 2.5);
+title('pareto front for computational effort');
+legend('pareto points''possible design points', 'pareto points');

@@ -1,4 +1,4 @@
-function [ max_abs_error, mse, N, C ] = cheb_quantized( S, a, b, pts, n, wordlength, fractionlength, coeff_wordlength, coeff_fractionlength, input_wordlength, input_fractionlength )
+function [ max_abs_error, mse, N, C ] = cheb_quantized( S, a, b, pts, n, coeff_wordlength, coeff_fractionlength, input_wordlength, input_fractionlength )
 %%
 % parameters
 % a,b interval borders
@@ -51,14 +51,14 @@ coeffs = (n+1)*S_POT;
 
 for k=1:S_POT
     P_POT(k,1:pts) = cheb_horner_quantized(S, AB_POT(k,1), AB_POT(k,2),...
-         n, wordlength, fractionlength, coeff_wordlength, coeff_fractionlength,...
+         n, coeff_wordlength, coeff_fractionlength,...
          input_wordlength, input_fractionlength);
 end
 
 max_abs_error = max(abs(Y_POT(:)-P_POT(:)));
 mse = immse(double(Y_POT), double(P_POT));
 N = coeffs * coeff_wordlength;
-C = 2*n*(wordlength + coeff_wordlength + input_wordlength);
+C = 2*n*(coeff_wordlength + input_wordlength);
 
 end
 

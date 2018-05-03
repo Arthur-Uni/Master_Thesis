@@ -1,4 +1,4 @@
-function [ y ] = cheb_horner_quantized(S, a, b, n, temp_wordlength, temp_fract, coeff_wordlength, coeff_fractionlength, input_wordlength, input_fractionlength)
+function [ y ] = cheb_horner_quantized(S, a, b, n, coeff_wordlength, coeff_fractionlength, input_wordlength, input_fractionlength)
 %  Parameters:
 %
 %    Input, real a, b, the domain of definition.
@@ -22,6 +22,9 @@ function [ y ] = cheb_horner_quantized(S, a, b, n, temp_wordlength, temp_fract, 
 dots = linspace(0,1);
 dots = fi(dots, true, input_wordlength,input_fractionlength);
 
+horner_wordlength = 2 * input_wordlength + coeff_wordlength + ceil(log2(n));
+horner_fractionlength = horner_setup(S,n, horner_wordlength);
+
 % get Chebyshev polynomial approximation coefficients
 c_q = cheb_poly_coeffs_quantized(a,b,n,coeff_wordlength,coeff_fractionlength);
 % c_q
@@ -33,10 +36,7 @@ k = length(dots);
 l = length(c_q);
 temp = ones(1,k);
 temp = temp .* c_q(1);
-temp = fi(temp, true, temp_wordlength + coeff_wordlength, temp_wordlength + coeff_wordlength - 11);
-
-horner_wordlength = temp_wordlength + coeff_wordlength;
-horner_fractionlength = horner_setup(S,n, horner_wordlength);
+temp = fi(temp, true, horner_wordlength, horner_fractionlength);
 
 for i=2:l
     temp = temp.*dots + c_q(i);
@@ -54,7 +54,7 @@ end
 
 %%
 % quantize the final result to have an output of wordlength bits
-temp = fi(temp, 1, temp_wordlength, temp_fract);
+temp = fi(temp, 1, input_wordlength, input_fractionlength);
 
 y = temp;
 

@@ -32,7 +32,6 @@ N = zeros(degree_size,word_size);               %memory utilization
 C = zeros(degree_size,word_size);               %computational effort
 
 coeff_wordlength = 16;
-coeff_fractionlength = coeff_wordlength - 2;
 
 if(min_degree ~= 1)
     temp = min_degree-1;

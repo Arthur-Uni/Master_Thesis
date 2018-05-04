@@ -16,10 +16,14 @@ max_degree = 10;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
-min_word = 4;
-max_word = 32;
-word_size = ((max_word-min_word)/2) + 1;        %number of word steps
-step_size = 2;
+% min_word = 4;
+% max_word = 32;
+% word_size = ((max_word-min_word)/2) + 1;        %number of word steps
+% step_size = 2;
+
+min_input = 4;
+max_input = 32;
+word_size = max_input - min_input + 1;
 
 max_abs_error = zeros(degree_size,word_size);
 mean_squ_error = zeros(degree_size,word_size);
@@ -29,9 +33,6 @@ C = zeros(degree_size,word_size);               %computational effort
 
 coeff_wordlength = 16;
 coeff_fractionlength = coeff_wordlength - 2;
-
-input_wordlength = 6;
-input_fractionlength = input_wordlength - 1;
 
 if(min_degree ~= 1)
     temp = min_degree-1;
@@ -44,11 +45,11 @@ end
 
 for n=min_degree:max_degree
    i = 1;
-    for wordlength = min_word:step_size:max_word
-        fractionlength = wordlength - 1;
+    for input_wordlength = min_input:max_input
+        input_fractionlength = input_wordlength - 1;
         [max_abs_error(n - temp, i), mean_squ_error(n - temp, i), N(n - temp, i), C(n - temp, i)] = ...
-            cheb_quantized(S, a, b, pts, n, wordlength, fractionlength, ... 
-            coeff_wordlength, coeff_fractionlength, input_wordlength, input_fractionlength);
+            cheb_quantized(S, a, b, pts, n,  coeff_wordlength, ...
+                coeff_fractionlength, input_wordlength, input_fractionlength);
         i = i+1;
     end
     

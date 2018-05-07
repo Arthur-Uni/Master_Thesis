@@ -17,6 +17,8 @@ module chebyshev_saturation_tb ();
       DUT.I_BITS = I_BITS,
       DUT.BOUNDARY_BIT_POSITION = BOUNDARY_BIT_POSITION;
       
+   // numbers format: 12'biiiiii_ffffff -> 6 integer bits, 6 fractional bits
+   
    initial begin
       data_in = 12'b111110_001100;
       # 10

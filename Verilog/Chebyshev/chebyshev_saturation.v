@@ -31,8 +31,8 @@ module chebyshev_saturation (data_in, data_out);
    assign integer_part = data_in[WL-1:I_BITS];
    
    /* check if saturation flag needs to be set: 
-      if any of the integer bits left of the saturation bit or the integer bit at the boundary position is set -> saturation_flag = 1
-      or if input is exactly the biggest negative saturation value -> saturation_flag = 1
+      if any of the integer bits left of the saturation bit are set (this includes the case, where the input is exactly the biggest possible negative saturation value) -> saturation_flag = 1
+      or if input is exactly the biggest positive saturation value -> saturation_flag = 1
       or if input integer part is exactyl the biggest positive saturation value and has fractional bits which are unequal to 0 -> saturation_flag = 1
       otherwise: saturation_flag = 0
    */

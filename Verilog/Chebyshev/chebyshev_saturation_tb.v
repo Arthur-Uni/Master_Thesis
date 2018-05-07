@@ -18,15 +18,17 @@ module chebyshev_saturation_tb ();
       DUT.BOUNDARY_BIT_POSITION = BOUNDARY_BIT_POSITION;
       
    initial begin
-      data_in = 12'b111100_000000;
+      data_in = 12'b111110_001100;
       # 10
-      data_in = 12'b001000_000001;
+      data_in = 12'b000100_000001;
       # 10
       data_in = 12'b000001_110110;
       # 10
-      data_in = 12'b000100_000011;
-      # 10
       data_in = 12'b000100_000000;
+      # 10
+      data_in = 12'b000010_000000; 
+      # 10
+      data_in = 12'b111100_000000;
    end
    
 endmodule

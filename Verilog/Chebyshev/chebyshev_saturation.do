@@ -7,7 +7,6 @@ add wave -noupdate -expand -group DUT /chebyshev_saturation_tb/DUT/sign_flag
 add wave -noupdate -expand -group DUT /chebyshev_saturation_tb/DUT/sign_extension
 add wave -noupdate -expand -group DUT /chebyshev_saturation_tb/DUT/saturation_flag
 add wave -noupdate -expand -group DUT /chebyshev_saturation_tb/DUT/saturation
-add wave -noupdate -expand -group DUT /chebyshev_saturation_tb/DUT/test
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {0 ps} 0}
 quietly wave cursor active 0

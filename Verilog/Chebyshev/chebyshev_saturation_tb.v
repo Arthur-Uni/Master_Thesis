@@ -2,11 +2,11 @@ module chebyshev_saturation_tb ();
 
    localparam WL = 12;            //wordlength
    localparam I_BITS = 6;        //# integer bits
-   localparam BOUNDARY_BIT_POSITION = 2;  // which integer bit is relevant for the saturation_flag (counted from LSB of integer part upwards)
-   
+   localparam BOUNDARY_BIT_POSITION = 3;  // which integer bit is relevant for the saturation_flag (counted from LSB of integer part upwards)
+   localparam O_BITS = WL - (I_BITS - BOUNDARY_BIT_POSITION);
    
    reg    [WL-1:0]       data_in;
-   wire   [WL-1:0]       data_out;
+   wire   [O_BITS-1:0]       data_out;
    
    chebyshev_saturation DUT(
          .data_in(data_in),
@@ -18,13 +18,13 @@ module chebyshev_saturation_tb ();
       DUT.BOUNDARY_BIT_POSITION = BOUNDARY_BIT_POSITION;
       
    initial begin
-      data_in = 12'b111111_000000;
+      data_in = 12'b111100_000000;
       # 10
       data_in = 12'b001000_000001;
       # 10
       data_in = 12'b000001_110110;
       # 10
-      data_in = 12'b100000_000011;
+      data_in = 12'b000100_000011;
       # 10
       data_in = 12'b000100_000000;
    end

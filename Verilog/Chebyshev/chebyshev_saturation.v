@@ -22,10 +22,6 @@ module chebyshev_saturation (data_in, data_out);
    wire                    saturation_flag;
    wire     [WL-1:0]       saturation;
    
-   wire     [WL-I_BITS-1:0] test1;
-   wire       [I_BITS-1:0]               test2;
-   wire                     test3;
-   
 // structural coding
    
    assign integer_part = data_in[WL-1:I_BITS];
@@ -37,10 +33,6 @@ module chebyshev_saturation (data_in, data_out);
       otherwise: saturation_flag = 0
    */
    assign saturation_flag = ((integer_part[I_BITS-1:BOUNDARY_BIT_POSITION] ^ { {I_BITS-BOUNDARY_BIT_POSITION{1'b0}} } ) != 1'b0 ) ? 1 : (( { {I_BITS-BOUNDARY_BIT_POSITION{1'b0}}, {1'b1}, {WL - (I_BITS - BOUNDARY_BIT_POSITION + 1){1'b0}} } == data_in ) != 1'b0 ) ? 1 : ( ({ {I_BITS-BOUNDARY_BIT_POSITION{1'b0}}, {1'b1}, {BOUNDARY_BIT_POSITION-1{1'b0}} } == integer_part) && ( ({ {WL-I_BITS{1'b0}} } ^ data_in[WL-I_BITS-1:0]) != 1'b0)) ? 1 : 0;
-   
-   assign test1 = data_in[WL-I_BITS-1:0];
-   assign test2 = { {I_BITS-BOUNDARY_BIT_POSITION{1'b0}}, {1'b1}, {BOUNDARY_BIT_POSITION-1{1'b0}} };
-   assign test3 = ({ {I_BITS-BOUNDARY_BIT_POSITION-1{1'b0}}, {1'b1}, {I_BITS-BOUNDARY_BIT_POSITION{1'b0}} } == integer_part);
    
    assign sign_flag = data_in[WL-1];
    

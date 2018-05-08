@@ -148,6 +148,7 @@ end
 
 %%                                            
 for n=min_degree:max_degree
+    adder_out_widening = ceil(log2(n));
     coeff_fractionlength = coeffs_setup(S, n, coeff_wordlength);
     i = 1;
     for input_wordlength = min_word:step_size:max_word
@@ -177,12 +178,31 @@ for n=min_degree:max_degree
 %         figure(6)
 %         approx = plot(X, P_POT);
 %%        
+% % design complexity/area transistor count
+%         adder_output_bits = 2 * input_wordlength + coeff_wordlength + ...
+%             adder_out_widening;
+%         CA_adder_transistorcount = adder_output_bits * 56;  % 56 = transistor count for
+%                                                             % one full
+%                                                             % adder without
+%                                                             % optimizations
+%         l = input_wordlength;
+%         k = input_wordlength + coeff_wordlength;
+%         CA_Array_Multiplier_transistorcount = l * k * 6 + 56 * k + (k*l-k-l) * 12; 
+
+%% quadratic regression: y = beta2 * x^2 + beta1 * x + beta0
+        combined_wordlength = input_wordlength + coeff_wordlength;
+        beta2 = 0.017147623788177732140347586664575;
+        beta1 = 0.3410854832771987865669416351011;
+        beta0 = 5.5892904331629633674083379446529;
+%%
         abs_error = max(abs(Y_POT(:)-P_POT(:)));
         max_abs_error(n - temp, i) = abs_error;
         mean_squ_error(n - temp, i) = immse(double(Y_POT), double(P_POT));
         Coeffs(n - temp, i) = (n+1)*S_POT;
         N(n - temp, i) = Coeffs(n - temp)*coeff_wordlength;
-        C(n - temp, i) = 2*n*(input_wordlength + coeff_wordlength);
+        % C(n - temp, i) = 2*n*(input_wordlength + coeff_wordlength);
+        % C(n - temp, i) = CA_adder_transistorcount + CA_Array_Multiplier_transistorcount;
+        C(n - temp, i) = n * (beta2 * combined_wordlength^2 + beta1 * combined_wordlength + beta0);
         i = i+1;
     end
 end
@@ -223,7 +243,7 @@ legend(Legend);
 figure(2);
 subplot(2,1,1);
 p3 = plot(C, max_abs_error, 'LineWidth', width);
-xlabel('computational effort', 'FontSize', fontSize);
+xlabel('transistor count', 'FontSize', fontSize);
 ylabel('max abs error', 'FontSize', fontSize);
 hold on;
 grid on;
@@ -236,7 +256,7 @@ legend(Legend);
 
 subplot(2,1,2);
 p4 = plot(C, mean_squ_error, 'LineWidth', width);
-xlabel('computational effort', 'FontSize', fontSize);
+xlabel('transistor count', 'FontSize', fontSize);
 ylabel('mean squared error', 'FontSize', fontSize);
 hold on;
 grid on;
@@ -286,27 +306,44 @@ legend(Legend);
 % pareto optimization
 % M = max_abs_error;
 % 
-P = cheb_pareto_v2(M, C);
+P_C = cheb_pareto_v2(M, C);
+P_N = cheb_pareto_v2(M, N);
 
-Ones = P>0;
+Ones_C = P_C>0;
+Ones_N = P_N>0;
 
-M_pareto = Ones .* M;
-N_pareto = Ones .* N;
-C_pareto = Ones .* C;
+M_pareto_C = Ones_C .* M;
+M_pareto_N = Ones_N .* M;
+N_pareto = Ones_N .* N;
+C_pareto = Ones_C .* C;
 
-M_pareto(M_pareto==0) = [];
+M_pareto_C(M_pareto_C==0) = [];
+M_pareto_N(M_pareto_N==0) = [];
 N_pareto(N_pareto==0) = [];
 C_pareto(C_pareto==0) = [];
 
 figure(3)
 hold on;
 grid on;
-s = scatter(C(:), M(:), 50, 'x', 'LineWidth', 2.5);
+s_C = scatter(C(:), M(:), 50, 'x', 'LineWidth', 2.5);
 set(gca, 'FontSize', fontSize);
-xlabel('computational effort', 'FontSize', fontSize);
+xlabel('transistor count', 'FontSize', fontSize);
 ylabel('maximum absolute error', 'FontSize', fontSize);
 title('all points for computational effort');
 
-s_pareto = scatter(C_pareto, M_pareto, 75, 'x', 'LineWidth', 2.5);
-title('pareto front for computational effort');
-legend('pareto points''possible design points', 'pareto points');
+s_pareto_C = scatter(C_pareto, M_pareto_C, 75, 'x', 'LineWidth', 2.5);
+title('pareto front for transistor count');
+legend('possible design points', 'pareto points');
+
+figure(4)
+hold on;
+grid on;
+s_N = scatter(N(:), M(:), 50, 'x', 'LineWidth', 2.5);
+set(gca, 'FontSize', fontSize);
+xlabel('transistor count', 'FontSize', fontSize);
+ylabel('maximum absolute error', 'FontSize', fontSize);
+title('all points for memory utilization');
+
+s_pareto_N = scatter(N_pareto, M_pareto_N, 75, 'x', 'LineWidth', 2.5);
+title('pareto front for memory utilization');
+legend('possible design points', 'pareto points');

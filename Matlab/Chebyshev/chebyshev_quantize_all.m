@@ -47,10 +47,6 @@ end
 interval_size = b-a;
 max_step_size = interval_size / S;
 
-if(mod(b-a, 2) ~= 0)
-    error('interval size is not a power of two');
-end
-
 %combine a and b in matrix AB
 AB_POT = zeros(S_POT,2);
 
@@ -132,7 +128,7 @@ Coeffs = zeros(degree_size,word_size);          %number of coefficients
 N = zeros(degree_size,word_size);               %memory utilization
 C = zeros(degree_size,word_size);               %computational effort
                                                 
-P_POT = zeros(S_POT,pts);                           %matrix storing polynomial 
+P_POT = zeros(S_POT,pts);                       %matrix storing polynomial 
                                                 %approximation values
                                                 %calculated for each
                                                 %segment

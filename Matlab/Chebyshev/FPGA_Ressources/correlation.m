@@ -5,7 +5,7 @@ clc;
 load('extracted_data.mat');
 
 %% transistor count model for one multiplier and one adder
-transistor_count = (2.*WL+CL).*28 + WL.*CL.*6 + 12.*WL + (WL.*CL-WL-CL).*28;
+t = (2.*WL+CL).*28 + WL.*CL.*6 + 12.*WL + (WL.*CL-WL-CL).*28;
 
 %% polynomial regression
 % sum of input wordlength and coefficient wordlength
@@ -24,7 +24,6 @@ r = beta(1) + beta(2) .* x + beta(3) .* x.^2;
 
 %% normalization
 r = r ./ max(r);
-t = transistor_count;
 t = t ./ max(t);
 
 %% correlation

@@ -38,14 +38,17 @@ if(~isempty(x_neg))
     
     x_neg_integer = abs(fix(x_neg));
     
-    x_neg_fractional = abs(x_neg + x_neg_integer);
-    x_neg_fractional = fi(x_neg_fractional, false, 32, 32);
+    y_neg_fractional = abs(x_neg + x_neg_integer);
+    y_neg_fractional = fi(y_neg_fractional, false, 32, 32);
     
-    x_neg_fractional = bitshift(x_neg_fractional, -2);
+    y_neg_fractional = bitshift(y_neg_fractional, -2);
     
-    x_neg_fractional = bitset(x_neg_fractional, 31);
+    y_neg_fractional = bitset(y_neg_fractional, 31);
     
-    x_neg_fractional = bitshift(x_neg_fractional, - x_neg_integer);
+    for i=1:size(y_neg_fractional,2)
+        y_neg_fractional(i) = bitshift(y_neg_fractional(i), - x_neg_integer(i));
+    end
+    
 end
 
 %% positive part

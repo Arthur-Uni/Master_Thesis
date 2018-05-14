@@ -177,13 +177,13 @@ for n=min_degree:max_degree
 % % design complexity/area transistor count
 %         adder_output_bits = 2 * input_wordlength + coeff_wordlength + ...
 %             adder_out_widening;
-%         CA_adder_transistorcount = adder_output_bits * 56;  % 56 = transistor count for
+%         CA_adder_transistorcount = adder_output_bits * 28;  % 56 = transistor count for
 %                                                             % one full
 %                                                             % adder without
 %                                                             % optimizations
 %         l = input_wordlength;
 %         k = input_wordlength + coeff_wordlength;
-%         CA_Array_Multiplier_transistorcount = l * k * 6 + 56 * k + (k*l-k-l) * 12; 
+%         CA_Array_Multiplier_transistorcount = l * k * 6 + 12 * k + (k*l-k-l) * 28; 
 
 %% quadratic regression: y = beta2 * x^2 + beta1 * x + beta0
         combined_wordlength = input_wordlength + coeff_wordlength;

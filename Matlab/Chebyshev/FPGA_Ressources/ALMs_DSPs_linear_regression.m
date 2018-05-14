@@ -1,12 +1,16 @@
 % obtained data from Quartus for different input and coefficient
 % wordlengths
 
+load('extracted_data.mat');
+
 % sum of input wordlength and coefficient wordlength
-x = [2, 4, 8, 16, 20, 24, 32, 48, 48, 64];
+% x = [2, 4, 8, 16, 20, 24, 32, 48, 48, 64];
+x = combinedwordlength;
 x_mean = mean(x);
 
 % sum of ALMs and DSP for each value of x
-y = [7, 6, 10, 16, 22, 22, 29, 65, 63, 96];
+% y = [7, 6, 10, 16, 22, 22, 29, 65, 63, 96];
+y = ALMDSP;
 y_mean = mean(y);
 
 % plotting parameters

@@ -1,5 +1,8 @@
 function [ y, y_fixed_point ] = sig_PLA_1991( x, wordlength )
 
+% set global fimath settings
+globalfimath('OverflowAction','Saturate','RoundingMethod','Round')
+
 %% get all negative values of x
 neg_logical = x < 0;
 x_neg = neg_logical .* x;
@@ -44,34 +47,33 @@ if(~isempty(x_neg))
     % get fractional part of x_neg
     x_neg_fractional = x_neg + x_neg_integer;
     
-    n = zeros(1, size(x,2));
-    for i=1:size(x_neg_fractional,2);
-        if(x_neg_fractional(i) == 0 && x_neg_integer(i) ~= 0)
-            n(i) = x_neg_integer(i) - 1;
-        else
-            n(i) = x_neg_integer(i);
-        end
-    end
-    
     % convert to signed fixed point format
     x_neg_fractional = fi(x_neg_fractional, true, wordlength, fractionlength);
+    
+    T = numerictype(0, wordlength, wordlength);
+    
+    x_neg_reinterpret = reinterpretcast(x_neg_fractional, T);
     
     %% manipulate bit stream to directly convert to y_neg_fixed_point
     
     % remove sign bit
-    x_neg_fractional = bitset(x_neg_fractional, wordlength, 0);
+    % x_neg_fractional = bitset(x_neg_fractional, wordlength, 0);
     
     % shift two two bits to the right
-    x_neg_fractional = bitshift(x_neg_fractional, -2);
+    x_neg_reinterpret = bitshift(x_neg_reinterpret, -2);
     
     % add 0.5 shifted one place to the right
-    x_neg_fractional = bitset(x_neg_fractional, wordlength - 2);
+    x_neg_reinterpret = bitset(x_neg_reinterpret, wordlength - 2);
     
     %% shift x_neg_fractional to acquire y_neg_fixed_point
     
     for i=1:size(x_neg_fractional,2)
-        y_neg_fixed_point(i) = bitshift(x_neg_fractional(i), -n(i));
+        y_neg_fixed_point(i) = bitshift(x_neg_reinterpret(i), -x_neg_integer(i));
     end
+    
+    T2 = numerictype(1, wordlength, wordlength - 1);
+    
+    y_neg_fixed_point_reinterpret = reinterpretcast(y_neg_fixed_point, T2);
     
 end
 

@@ -106,7 +106,7 @@ if(~isempty(x_pos))
     
     x_pos_fractional = bitshift(x_pos_fractional, -2);
     
-    x_pos_fractional = bitset(x_pos_fractional, 32);
+    x_pos_fractional = bitset(x_pos_fractional, wordlength);
     
     for i=1:size(x_pos_fractional,2)
         y_pos_fixed_point(i) = bitshift(x_pos_fractional(i), -x_pos_integer_temp(i));
@@ -130,9 +130,9 @@ end
 
 %% bring everything together for fixed point part
 if(isempty(x_neg))
-    y_fixed_point = y_pos_fixed_point;
+    y_fixed_point = y_pos_fixed_point_reinterpret;
 elseif(isempty(x_pos))
-    y_fixed_point = y_neg_fixed_point;
+    y_fixed_point = y_neg_fixed_point_reinterpret;
 else
     y_fixed_point = [y_neg_fixed_point_reinterpret y_pos_fixed_point_reinterpret];
 end

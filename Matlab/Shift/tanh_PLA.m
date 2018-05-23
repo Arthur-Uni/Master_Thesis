@@ -69,12 +69,14 @@ if(~isempty(x_neg))
     
     x_neg_reinterpret = reinterpretcast(x_neg_fractional, T);
     
-    x_neg_reinterpret = bitset(x_neg_reinterpret, wordlength-1);
+    x_neg_reinterpret = bitshift(x_neg_reinterpret, 1);
+    
+    x_neg_reinterpret = bitset(x_neg_reinterpret, wordlength);
     
     %% shift x_neg_fractional to acquire y_neg_fixed_point
     
     for i=1:size(x_neg_fractional,2)
-        y_neg_fixed_point(i) = bitshift(x_neg_reinterpret(i), -x_neg_integer(i));
+        y_neg_fixed_point(i) = bitshift(x_neg_reinterpret(i), -x_neg_integer_temp(i));
     end
     
     y_neg_fixed_point = bitshift(y_neg_fixed_point, -1);

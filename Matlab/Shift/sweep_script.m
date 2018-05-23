@@ -28,13 +28,13 @@ msq_error = immse(t,y);
 width = 1.5;
 fontSize = 16;
 
-min_input = 8;
-max_input = 10;
+min_input = 5;
+max_input = 16;
 
 input_size = max_input - min_input + 1;
 
 min_output = 4;
-max_output = 8;
+max_output = 16;
 
 output_size = max_output - min_output + 1;
 
@@ -72,6 +72,8 @@ figure(1);
 
 x_tick = min_output:max_output;
 one = ones(1,size(x_tick,2));
+
+% plot
 subplot(2,1,1);
 grid on;
 hold on;
@@ -106,3 +108,27 @@ for iter=2:input_size+1
     Legend{iter}=strcat('input bits: ', num2str(min_input+iter-2));
 end
 legend(Legend);
+
+%% pareto
+M = max_abs_error';
+C = bits';
+P = f_pareto(M, C);
+
+Ones_C = P>0;
+
+M_pareto_C = Ones_C .* M;
+C_pareto = Ones_C .* C;
+M_pareto_C(M_pareto_C==0) = [];
+C_pareto(C_pareto == 0) = [];
+
+figure(3);
+hold on;
+grid on;
+s_C = scatter(C(:), M(:), 50, 'x', 'LineWidth', 2.5);
+set(gca, 'FontSize', fontSize);
+xlabel('wordlength', 'FontSize', fontSize);
+ylabel('maximum absolute error', 'FontSize', fontSize);
+title('pareto front');
+
+s_pareto_C = scatter(C_pareto, M_pareto_C, 75, 'x', 'r', 'LineWidth', 2.5);
+legend('possible design points', 'pareto points');

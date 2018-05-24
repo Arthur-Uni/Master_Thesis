@@ -1,5 +1,5 @@
-module shift_PLA(clock, resetn, in, out);
-
+// module shift_PLA(clock, resetn, in, out);
+module shift_PLA(in, out);
 /*
 PLA approximation for the tanh function using only shift operations and bit manipulations
 input form:   in = x^n ... x^0 . x^-1 x^-2 ...
@@ -20,15 +20,15 @@ for positive inputs:
 parameter W_IN;      // input wordlength
 parameter W_OUT;     // output wordlength
 parameter IN_I;      // # number of input integer bits
-parameter IN_F;      // # number of input fractional bits
-parameter OUT_F;     // # number of output fractional bits -> determines accuracy
 parameter BOUNDARY;  // # position of relevant MSB for shift operation, otherwise output is asymptotic bound of tanh (+1,-1)
 
+localparam IN_F = W_IN - IN_I;      // # number of input fractional bits
+localparam OUT_F = W_OUT - 1;       // # number of output fractional bits -> determines accuracy
 localparam I_INDEX = W_IN - IN_I;
 localparam SAT_BITS = W_IN - BOUNDARY;
 
-input                        clock;
-input                        resetn;
+//input                        clock;
+//input                        resetn;
 
 input       [ W_IN-1:0 ]     in;
 

@@ -97,7 +97,7 @@ hold on;
 plot(x_tick, one.*msq_error, '--', 'LineWidth', 2*width);
 plot(x_tick, mean_squ_error', 'LineWidth', width);
 xlabel('output bits');
-ylabel('relative error');
+ylabel('mean squared error');
 axis([min_output max_output 0 max(mean_squ_error(:))]);
 x_tick = min_output:max_output;
 set(gca, 'XTick', x_tick, 'FontSize', fontSize);
@@ -116,19 +116,26 @@ P = f_pareto(M, C);
 
 Ones_C = P>0;
 
-M_pareto_C = Ones_C .* M;
+M_pareto = Ones_C .* M;
 C_pareto = Ones_C .* C;
-M_pareto_C(M_pareto_C==0) = [];
+
+M_mod = M;
+M_mod(M_pareto ~= M) = [];
+
+C_mod = C;
+C_mod(C_pareto ~= C) = [];
+
+M_pareto(M_pareto==0) = [];
 C_pareto(C_pareto == 0) = [];
 
 figure(3);
 hold on;
 grid on;
-s_C = scatter(C(:), M(:), 50, 'x', 'LineWidth', 2.5);
+s_C = scatter(C(:), M(:), 50, 'x', 'r', 'LineWidth', 1.75);
 set(gca, 'FontSize', fontSize);
 xlabel('wordlength', 'FontSize', fontSize);
 ylabel('maximum absolute error', 'FontSize', fontSize);
 title('pareto front');
 
-s_pareto_C = scatter(C_pareto, M_pareto_C, 75, 'x', 'r', 'LineWidth', 2.5);
+s_pareto_C = scatter(C_mod, M_mod, 75, 'o', 'filled', 'b', 'LineWidth', 2);
 legend('possible design points', 'pareto points');

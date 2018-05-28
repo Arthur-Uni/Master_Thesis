@@ -111,13 +111,19 @@ legend(Legend);
 
 %% pareto
 M = max_abs_error';
+N = mean_squ_error';
 C = bits';
 P = f_pareto(M, C);
+P_mse = f_pareto(N,C);
 
-Ones_C = P>0;
+Ones_C = P > 0;
+Ones_mse = P_mse > 0;
 
 M_pareto = Ones_C .* M;
 C_pareto = Ones_C .* C;
+
+N_pareto_mse = Ones_mse .* N;
+C_pareto_mse = Ones_mse .* C;
 
 M_mod = M;
 M_mod(M_pareto ~= M) = [];
@@ -125,8 +131,17 @@ M_mod(M_pareto ~= M) = [];
 C_mod = C;
 C_mod(C_pareto ~= C) = [];
 
+N_mod_mse = N;
+N_mod_mse(N_pareto_mse ~= N) = [];
+
+C_mod_mse = C;
+C_mod_mse(C_pareto_mse ~= C) = [];
+
 M_pareto(M_pareto==0) = [];
 C_pareto(C_pareto == 0) = [];
+
+N_pareto_mse(N_pareto_mse == 0) = [];
+C_pareto_mse(C_pareto_mse == 0) = [];
 
 figure(3);
 hold on;
@@ -138,4 +153,16 @@ ylabel('maximum absolute error', 'FontSize', fontSize);
 title('pareto front');
 
 s_pareto_C = scatter(C_mod, M_mod, 75, 'o', 'filled', 'b', 'LineWidth', 2);
+legend('possible design points', 'pareto points');
+
+figure(4);
+hold on;
+grid on;
+s_C_mse = scatter(C(:), N(:), 50, 'x', 'r', 'LineWidth', 1.75);
+set(gca, 'FontSize', fontSize);
+xlabel('wordlength', 'FontSize', fontSize);
+ylabel('maximum absolute error', 'FontSize', fontSize);
+title('pareto front (MSE)');
+
+s_pareto_C_mse = scatter(C_mod_mse, N_mod_mse, 75, 'o', 'filled', 'b', 'LineWidth', 2);
 legend('possible design points', 'pareto points');

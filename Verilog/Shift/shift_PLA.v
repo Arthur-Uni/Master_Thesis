@@ -1,5 +1,4 @@
-// module shift_PLA(clock, resetn, in, out);
-module shift_PLA(in, out);
+module shift_PLA(clock, resetn, in, out);
 /*
 PLA approximation for the tanh function using only shift operations and bit manipulations
 input form:   in = x^n ... x^0 . x^-1 x^-2 ...
@@ -27,8 +26,8 @@ localparam OUT_F = W_OUT - 1;       // # number of output fractional bits -> det
 localparam I_INDEX = W_IN - IN_I;
 localparam SAT_BITS = W_IN - BOUNDARY;
 
-//input                        clock;
-//input                        resetn;
+input                        clock;
+input                        resetn;
 
 input       [ W_IN-1:0 ]     in;
 
@@ -44,6 +43,23 @@ wire        [ SAT_BITS:0 ]   shift_amount;   // >> shift_amount with widening of
 wire                         saturation;
 wire        [ IN_I-1:0]      twos_complement;
 
+reg         [ W_IN-1:0 ]     reg_in;
+reg         [ W_OUT-1:0 ]    reg_out;
+
+always @(posedge clock or negedge resetn)
+   begin
+      if(!resetn)
+         begin
+            reg_in <= { {W_IN{1'b0}} };
+            reg_out <= { {W_OUT{1'b0}} };
+         end
+      else
+         begin
+            reg_in <= in;
+            reg_out <= out;
+         end
+   end
+
 // divide input into integer and fractional part and keep sign bit
 assign sign_bit = in[W_IN-1];
 assign integer_part = in[W_IN-1:I_INDEX];
@@ -52,7 +68,7 @@ assign fractional_part = in[I_INDEX-1:0];
 // perform shift operation
 assign shift_amount = in[SAT_BITS:I_INDEX] << 1; // input integer part times 2
 assign temp = (sign_bit == 1'b1) ? { 1'b1, fractional_part[I_INDEX-2:0] } : { 1'b1, 1'b0, fractional_part[I_INDEX-2:1] };
-assign temp_shift_result = (sign_bit == 1'b0) ? temp >>> shift_amount : temp >> shift_amount; // >> -> binary shift; >>> -> arithmetic shift
+assign temp_shift_result = (sign_bit == 1'b0) ? temp >>> shift_amount : temp >> shift_amount; // >> -> binary shift ( no sign extension); >>> -> arithmetic shift (sign extension)
 
 // check if output is forced to asymptotic bounds
 assign twos_complement = (sign_bit == 1'b1) ? ~integer_part + 1 : { {IN_I{1'b0}} };

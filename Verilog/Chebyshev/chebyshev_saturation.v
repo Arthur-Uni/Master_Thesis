@@ -7,7 +7,7 @@ module chebyshev_saturation (data_in, data_out);
    parameter   BOUNDARY_BIT_POSITION; // at which bit to saturate
    
    localparam  O_BITS = WL - (I_BITS - BOUNDARY_BIT_POSITION); // remaining output bits with unnecessary integer bits removed
-   
+   localparam  F_BITS = WL - I_BITS;
 // input and output declaration
    
    input       [WL-1:0]       data_in;
@@ -16,6 +16,8 @@ module chebyshev_saturation (data_in, data_out);
 // register and wire declaration
    
    wire        [I_BITS-1:0]   integer_part;
+   wire        [F_BITS-1:0]   fractional_part;
+   wire        [I_BITS-1:0]   twos_complement;  // needed for saturation check
    
    wire                       sign_flag;
    
@@ -25,14 +27,14 @@ module chebyshev_saturation (data_in, data_out);
 // structural coding
    
    assign integer_part = data_in[WL-1:I_BITS];
+   assign fractional_part = data_in[F_BITS-1:0];
    
-   /* check if saturation flag needs to be set: 
-      if any of the integer bits left of the saturation bit are set (this includes the case, where the input is exactly the biggest possible negative saturation value) -> saturation_flag = 1
-      or if input is exactly the biggest positive saturation value -> saturation_flag = 1
-      or if input integer part is exactyl the biggest positive saturation value and has fractional bits which are unequal to 0 -> saturation_flag = 1
-      otherwise: saturation_flag = 0
+   /* check if saturation flag needs to be set;
+      twos complement is needed for the case of negative inputs to check if it is bigger than the saturation bounds, in this case [-4;4]
    */
-   assign saturation_flag = ((integer_part[I_BITS-1:BOUNDARY_BIT_POSITION] ^ { {I_BITS-BOUNDARY_BIT_POSITION{1'b0}} } ) != 1'b0 ) ? 1 : (( { {I_BITS-BOUNDARY_BIT_POSITION{1'b0}}, {1'b1}, {WL - (I_BITS - BOUNDARY_BIT_POSITION + 1){1'b0}} } == data_in ) != 1'b0 ) ? 1 : ( ({ {I_BITS-BOUNDARY_BIT_POSITION{1'b0}}, {1'b1}, {BOUNDARY_BIT_POSITION-1{1'b0}} } == integer_part) && ( ({ {WL-I_BITS{1'b0}} } ^ data_in[WL-I_BITS-1:0]) != 1'b0)) ? 1 : 0;
+   assign twos_complement = (sign_flag == 1'b1) ? ~integer_part + 1 : { {I_BITS{1'b0}} };
+   
+   assign saturation_flag = (sign_flag == 1'b1 && twos_complement >= 4'd4 && fractional_part != { {F_BITS{1'b0}} }) ? 1 : (sign_flag == 1'b0 && integer_part >= 4'd4 && fractional_part != { {F_BITS{1'b0}} }) ? 1 : (sign_flag == 1'b0 && integer_part >= 4'd4 && fractional_part == { {F_BITS{1'b0}} }) ? 1 : 0;
    
    assign sign_flag = data_in[WL-1];
    

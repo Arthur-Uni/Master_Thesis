@@ -24,6 +24,8 @@ for positive inputs:
    localparam IN_F = W_IN - IN_I;      // # number of input fractional bits
    localparam OUT_F = W_OUT - 1;       // # number of output fractional bits -> determines accuracy
    localparam SAT_BITS = W_IN - BOUNDARY;
+   localparam F_ADDITIONAL = (IN_F < OUT_F) ? OUT_F - IN_F : 0; 
+   localparam F_BITS = (IN_F > OUT_F ) ? IN_F - OUT_F - 1 : 0;
 
    input                        clock;
    input                        resetn;
@@ -34,13 +36,16 @@ for positive inputs:
 
    wire        [ IN_I-1:0 ]     integer_part;
    wire        [ IN_F-1:0 ]     fractional_part;
-   wire signed [ IN_F-1:0 ]     temp; // this is needed to obtain the correct form before the shifting
+   wire signed [ OUT_F-1:0 ]    temp; // this is needed to obtain the correct form before the shifting
+   wire signed [ OUT_F-1:0 ]    test; // this is needed to obtain the correct form before the shifting
    wire                         sign_bit;
    wire signed [ OUT_F-1:0 ]    temp_shift_result;
-   wire        [ W_OUT-1:0 ]    shift_result;   // integer bit restored
-   wire        [ SAT_BITS:0 ]   shift_amount;   // >> shift_amount with widening of 1 bit to accomodate for left shift
+   wire        [ W_OUT-1:0 ]    shift_result;
+   wire        [ W_IN-1:0 ]     shift_amount_temp;
+   wire        [ IN_I-1:0 ]     shift_amount;
    wire                         saturation;
-   wire        [ IN_I-1:0]      twos_complement;
+   wire        [ W_IN-1:0 ]     twos_complement;
+   wire        [ IN_I-1:0 ]     twos_complement_integer_part;
 
    reg         [ W_IN-1:0 ]     reg_in;
    reg         [ W_OUT-1:0 ]    reg_out;
@@ -65,21 +70,26 @@ for positive inputs:
    assign fractional_part = in[IN_F-1:0];
 
 // perform shift operation
-   assign shift_amount = (sign_bit == 1'b1) ? twos_complement << 1 : in[SAT_BITS:IN_F] << 1; // input integer part times 2
-   assign temp = (sign_bit == 1'b1) ? { 1'b1, fractional_part[IN_F-2:0] } : { 1'b1, 1'b0, fractional_part[IN_F-2:1] };
+   assign shift_amount_temp = (sign_bit == 1'b1) ? twos_complement << 1 : in << 1; // input * 2
+   assign shift_amount = shift_amount_temp[W_IN-1 : (W_IN-IN_I)];
+   
+   assign test = { 1'b1, 1'b0, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL-1{1'b0}} };
+   
+   assign temp = (sign_bit == 1'b1) ? { 1'b1, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL{1'b0}} } : { 1'b1, 1'b0, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL-1{1'b0}} };
    assign temp_shift_result = (sign_bit == 1'b0) ? temp >>> shift_amount : temp >> shift_amount; // >> -> binary shift ( no sign extension); >>> -> arithmetic shift (sign extension)
 
 // check if output is forced to asymptotic bounds
-   assign twos_complement = (sign_bit == 1'b1) ? ~integer_part + 1 : { {IN_I{1'b0}} };
-   assign saturation = (sign_bit == 1'b0 && integer_part[IN_I-2:0]> 3'd4) ? 1 : (sign_bit == 1'b1 && twos_complement > 3'd4) ? 1 : 0;
+   assign twos_complement = (sign_bit == 1'b1) ? ~in + 1 : { {W_IN{1'b0}} };
+   assign twos_complement_integer_part = (sign_bit == 1'b1) ? ~in[W_IN-1:W_IN-IN_I] + 1 : { {IN_I{1'b0}} };
+   assign saturation = (sign_bit == 1'b0 && integer_part[IN_I-2:0]> 3'd4) ? 1 : (sign_bit == 1'b1 && twos_complement_integer_part > 3'd4) ? 1 : 0;
 
 // build output
-   assign shift_result = { sign_bit, temp_shift_result };
+   assign shift_result = { sign_bit, temp_shift_result };  // integer bit restored
 /*
 if saturation bit is set and input is negative, saturate to -1
 else if saturation bit is set and inout is positive, saturate to ~1
 else out = shift_result
 */
-   assign out = (saturation == 1'b1 && sign_bit == 1'b1) ? { sign_bit, {W_OUT-1{1'b0}} } : (saturation == 1'b1 && sign_bit == 1'b0) ? { sign_bit, {W_OUT-1{1'b1}} } : shift_result;
+   assign out = (saturation == 1'b1 && sign_bit == 1'b1) ? { sign_bit, {OUT_F{1'b0}} } : (saturation == 1'b1 && sign_bit == 1'b0) ? { sign_bit, {OUT_F{1'b1}} } : shift_result;
 
 endmodule

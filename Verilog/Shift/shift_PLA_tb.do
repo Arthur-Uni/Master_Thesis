@@ -8,20 +8,21 @@ add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/in
 add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/out
 add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/integer_part
 add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/fractional_part
-add wave -noupdate -expand -group DUT -radix binary /shift_PLA_tb/DUT/temp
+add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/temp
 add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/sign_bit
-add wave -noupdate -expand -group DUT -radix binary /shift_PLA_tb/DUT/temp_shift_result
+add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/temp_shift_result
 add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/shift_result
-add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/shift_amount
+add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/shift_amount_temp
+add wave -noupdate -expand -group DUT -radix binary /shift_PLA_tb/DUT/shift_amount
 add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/saturation
 add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/twos_complement
 add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/reg_in
 add wave -noupdate -expand -group DUT /shift_PLA_tb/DUT/reg_out
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {35 ps} 0}
+WaveRestoreCursors {{Cursor 1} {15 ps} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 150
-configure wave -valuecolwidth 100
+configure wave -namecolwidth 246
+configure wave -valuecolwidth 144
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
 configure wave -snapdistance 10
@@ -34,4 +35,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {64 ps}
+WaveRestoreZoom {0 ps} {83 ps}

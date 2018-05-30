@@ -30,7 +30,7 @@ x = fi(dots, true, input_wordlength, input_fractionlength);
 t = tanh(dots);
 % [y, y_fixed] = tanh_PLA(dots, output_wordlength);
 y = tanh_PLA(dots);
-y_fixed = tanh_shift(x, output_wordlength);
+y_fixed = tanh_shift_v2(x, output_wordlength);
 
 %% error calculation
 

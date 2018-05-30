@@ -36,8 +36,8 @@ for positive inputs:
 
    wire        [ IN_I-1:0 ]     integer_part;
    wire        [ IN_F-1:0 ]     fractional_part;
-   wire signed [ OUT_F-1:0 ]    temp; // this is needed to obtain the correct form before the shifting
-   wire signed [ OUT_F-1:0 ]    test; // this is needed to obtain the correct form before the shifting
+   wire signed [ OUT_F:0 ]      temp; // this is needed to obtain the correct form before the shifting
+   wire signed [ OUT_F:0 ]      test; // this is needed to obtain the correct form before the shifting
    wire                         sign_bit;
    wire signed [ OUT_F-1:0 ]    temp_shift_result;
    wire        [ W_OUT-1:0 ]    shift_result;
@@ -73,9 +73,9 @@ for positive inputs:
    assign shift_amount_temp = (sign_bit == 1'b1) ? twos_complement << 1 : in << 1; // input * 2
    assign shift_amount = shift_amount_temp[W_IN-1 : (W_IN-IN_I)];
    
-   assign test = { 1'b1, 1'b0, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL-1{1'b0}} };
+   assign test = { 1'b1, 1'b0, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL{1'b0}} };
    
-   assign temp = (sign_bit == 1'b1) ? { 1'b1, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL{1'b0}} } : { 1'b1, 1'b0, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL-1{1'b0}} };
+   assign temp = (sign_bit == 1'b1) ? { 1'b1, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL{1'b0}} } : { 1'b1, 1'b0, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL{1'b0}} };
    assign temp_shift_result = (sign_bit == 1'b0) ? temp >>> shift_amount : temp >> shift_amount; // >> -> binary shift ( no sign extension); >>> -> arithmetic shift (sign extension)
 
 // check if output is forced to asymptotic bounds
@@ -84,7 +84,7 @@ for positive inputs:
    assign saturation = (sign_bit == 1'b0 && integer_part[IN_I-2:0]> 3'd4) ? 1 : (sign_bit == 1'b1 && twos_complement_integer_part > 3'd4) ? 1 : 0;
 
 // build output
-   assign shift_result = { sign_bit, temp_shift_result };  // integer bit restored
+   assign shift_result = { sign_bit, temp_shift_result[OUT_F-1:0] };  // integer bit restored
 /*
 if saturation bit is set and input is negative, saturate to -1
 else if saturation bit is set and inout is positive, saturate to ~1

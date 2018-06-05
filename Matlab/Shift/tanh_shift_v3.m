@@ -1,4 +1,4 @@
-function [ y_fixed_point ] = tanh_shift_v2( x, wordlength )
+function [ y_fixed_point ] = tanh_shift_v3( x, wordlength )
 
 %% get all negative values of x
 neg_logical = x < 0;

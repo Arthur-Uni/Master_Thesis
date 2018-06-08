@@ -1,6 +1,6 @@
 function [ y ] = PLA( x )
 
-x_sat = abs(x) > 1;
+x_sat = abs(x) > 0.25;
 x_lin = x_sat ~= 1;
 
 y_sat = x_sat .* sign(x);

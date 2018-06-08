@@ -19,7 +19,7 @@ globalfimath('OverflowAction','Saturate','RoundingMethod','Round')
 %n = 3;
 
 %number of segments
-S = 4;      % needs to be a power of two such that interval [a,b] can be
+S = 2;      % needs to be a power of two such that interval [a,b] can be
             % divided into integer powers of two
 S_POT = log2(S)+1;
 
@@ -336,7 +336,7 @@ hold on;
 grid on;
 s_N = scatter(N(:), M(:), 50, 'x', 'LineWidth', 2.5);
 set(gca, 'FontSize', fontSize);
-xlabel('transistor count', 'FontSize', fontSize);
+xlabel('memory bits', 'FontSize', fontSize);
 ylabel('maximum absolute error', 'FontSize', fontSize);
 title('all points for memory utilization');
 

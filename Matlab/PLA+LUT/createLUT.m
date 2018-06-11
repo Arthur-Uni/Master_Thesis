@@ -1,4 +1,4 @@
-function [LUT, EvaluationPoints] = createLUT(a, b, NoE, signed, wordlength, fractionlength)
+function [LUT, LUT_EvaluationPoints, LUT_StepSize] = createLUT(a, b, NoE, signed, wordlength, fractionlength)
 %% parameters
 %   Inputs
 %       a: left interval boundary
@@ -11,10 +11,10 @@ function [LUT, EvaluationPoints] = createLUT(a, b, NoE, signed, wordlength, frac
 %       LUT: LUT entries
 %%
 
-stepsize = (b - a) / NoE;
+LUT_StepSize = (b - a) / NoE;
 
-EvaluationPoints = a + stepsize : stepsize : b;
-EntriesAcc = tanh(EvaluationPoints);
+LUT_EvaluationPoints = a + LUT_StepSize: LUT_StepSize : b;
+EntriesAcc = tanh(LUT_EvaluationPoints);
 EntriesFi = fi(EntriesAcc, signed, wordlength, fractionlength);
 
 LUT = double(EntriesFi);

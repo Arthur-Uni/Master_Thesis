@@ -4,7 +4,7 @@ close all;
 clc;
 
 %% input
-x = linspace(-4,4,8001);
+x = linspace(-6,6,16001);
 
 %% divide input into segments
 x_lin_logical = (abs(x) <= 0.5);
@@ -39,3 +39,19 @@ y_LUT = calculateLUT(x_LUT, LUT, LUT_EvaluationPoints, LUT_StepSize, offset) .* 
 
 %% bring everything together
 y = (y_lin + y_sat + y_LUT);
+
+%% plot
+
+% parameters
+width = 2;
+fontSize = 14;
+
+figure(1)
+hold on;
+grid on;
+
+plot(x, tanh(x), 'LineWidth', width);
+plot(x, y, 'LineWidth', width);
+xlabel('wordlength', 'FontSize', fontSize);
+ylabel('error quotient', 'FontSize', fontSize);
+set(gca, 'FontSize', fontSize);

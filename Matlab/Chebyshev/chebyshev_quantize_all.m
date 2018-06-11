@@ -19,12 +19,12 @@ globalfimath('OverflowAction','Saturate','RoundingMethod','Round')
 %n = 3;
 
 %number of segments
-S = 2;      % needs to be a power of two such that interval [a,b] can be
+S = 1;      % needs to be a power of two such that interval [a,b] can be
             % divided into integer powers of two
 S_POT = log2(S)+1;
 
 %number of points for linspace function
-pts = 100;
+pts = 101;
 
 %interval [a,b]: length must be a power of two so that the interval can be
 %divided into powers of two
@@ -113,11 +113,11 @@ end
 
 %%
 %parameters
-max_degree = 10;
-min_degree = 1;
+max_degree = 7;
+min_degree = 6;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
-min_word = 4;
+min_word =4;
 max_word = 32;
 word_size = ((max_word-min_word)/2) + 1;        %number of word steps
 step_size = 2;
@@ -151,7 +151,7 @@ for n=min_degree:max_degree
         input_fractionlength = input_wordlength - 1;
         for k=1:S_POT
             P_POT(k,1:pts) = cheb_horner_quantized(S, AB_POT(k,1), AB_POT(k,2),...
-                n, coeff_wordlength, coeff_fractionlength, input_wordlength, input_fractionlength);
+                n, pts, coeff_wordlength, coeff_fractionlength, input_wordlength, input_fractionlength);
         end
 %%
 % uncomment this for 2 segments

@@ -20,12 +20,10 @@ function [ y ] = cheb_horner_quantized(S, a, b, n, pts, coeff_wordlength, coeff_
 %%
 % evaluate polynomial approximation at [0,1]
 dots = linspace(0,1, pts);
-dots = fi(dots, false, input_wordlength, input_fractionlength);
+dots = fi(dots, true, input_wordlength,input_fractionlength);
 
-adder_widening = ceil(log2(n));
-adder_out_wordlength = 2 * input_wordlength + coeff_wordlength + adder_widening;
-adder_out_fractionlength = adder_out_wordlength - 3;
-temp_wordlength = horner_setup(S,n, input_wordlength + coeff_wordlength);
+horner_wordlength = 2 * input_wordlength + coeff_wordlength + ceil(log2(n));
+horner_fractionlength = horner_setup(S,n, horner_wordlength);
 
 % get Chebyshev polynomial approximation coefficients
 c_q = cheb_poly_coeffs_quantized(a,b,n,coeff_wordlength,coeff_fractionlength);
@@ -38,7 +36,7 @@ k = length(dots);
 l = length(c_q);
 temp = ones(1,k);
 temp = temp .* c_q(1);
-temp = fi(temp, true, adder_out_wordlength, adder_out_fractionlength);
+temp = fi(temp, true, horner_wordlength, horner_fractionlength);
 
 for i=2:l
     temp = temp.*dots + c_q(i);
@@ -50,7 +48,7 @@ for i=2:l
     
     % quantize temporary result so that wordlength of multiply and add
     % operation does not grow indefinitely
-    temp = fi(temp, true, input_wordlength + coeff_wordlength, temp_wordlength);
+    temp = fi(temp, true, horner_wordlength, horner_fractionlength);
     %temp = fi(temp, true, 32, 31);
 end
 

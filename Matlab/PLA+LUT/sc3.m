@@ -39,7 +39,7 @@ x_LUT_5 = x_LUT_5_logical .* x;
 
 %% parameter
 
-wordlength = 16;
+wordlength = 8;
 fractionlength = wordlength;
 signed = 0;
 

@@ -1,14 +1,14 @@
 %% cleanup
-clear;
-close all;
-clc;
+% clear;
+% close all;
+% clc;
 
 %%
 x = linspace(-6,6,16001);
 
 NoE_1 = 4;
 NoE_2 = 8;
-NoE_3 = 4;
+NoE_3 = 16;
 NoE_4 = 4;
 NoE_5 = 2;
 

@@ -4,9 +4,9 @@ close all;
 clc;
 
 %%
-x = linspace(-6,6,16001);
+x = -6:2^-12:6;
 
-[y, LUT_entries] = sc1(x, 2);
+[y, LUT_entries] = sc1(x, 4);
 
 %% error calculations
 t = tanh(x);

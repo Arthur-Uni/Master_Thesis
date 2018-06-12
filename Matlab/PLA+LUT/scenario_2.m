@@ -74,3 +74,18 @@ y_LUT_3 = calculateLUTPLA(x, LUT_3, LUT_StepSize_3, 0, 0, a_3, b_3, offset_3) .*
 
 %% bring everything together
 y = (y_lin + y_sat + y_LUT_1 + y_LUT_2 + y_LUT_3);
+
+%% plot
+% parameters
+width = 2;
+fontSize = 14;
+
+figure(1)
+hold on;
+grid on;
+
+plot(x, tanh(x), 'LineWidth', width);
+plot(x, y, 'LineWidth', width);
+xlabel('wordlength', 'FontSize', fontSize);
+ylabel('error quotient', 'FontSize', fontSize);
+set(gca, 'FontSize', fontSize);

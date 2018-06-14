@@ -23,7 +23,7 @@ x_LUT_logical = (temp1 .* temp2);
 a = 0.5;
 b = 2.5;
 
-NoE = 16;
+NoE = 32;
 
 signed = 0;
 wordlength = 8;

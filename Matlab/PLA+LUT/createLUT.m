@@ -19,7 +19,7 @@ LUTy(1) = y_start;
 
 for i=2:NoE
     LUTx(i) = x_start + (i-1) * LUT_StepSize;
-    LUTy(i) = tanh(LUTx(i));
+    LUTy(i) = tanh(LUTx(i)+(LUT_StepSize/2));
 end
 
 EntriesFi = fi(LUTy, signed, wordlength, fractionlength);

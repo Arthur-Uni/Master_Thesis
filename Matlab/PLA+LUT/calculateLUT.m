@@ -1,4 +1,4 @@
-function [ y ] = calculateLUT(x, LUT, LUT_EvaluationPoints, LUT_stepsize, offset)
+function [ y ] = calculateLUT(x, LUT, LUT_EvaluationPoints, LUT_StepSize, offset)
 %% parameter
 %   Inputs:
 %       x: inputs
@@ -16,7 +16,7 @@ LUT_upperbound = max(LUT);
 values = abs(x);
 temp = values - offset;
 temp(temp < 0) = 0;
-indices = round(temp ./ LUT_stepsize);
+indices = round(temp ./ LUT_StepSize);
 %indices(indices == 0) = 1;
 indices = indices + 1;
 indices(indices > numel(LUT)) = numel(LUT);

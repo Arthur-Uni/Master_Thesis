@@ -17,7 +17,7 @@ values = abs(x);
 temp = values - offset;
 temp(temp < 0) = 0;
 indices = round(temp ./ LUT_stepsize);
-% indices(indices == 0) = 1;
+%indices(indices == 0) = 1;
 indices = indices + 1;
 indices(indices > numel(LUT)) = numel(LUT);
 values = LUT(indices);

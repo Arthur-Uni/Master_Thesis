@@ -24,7 +24,7 @@ y_start = 0.5;
 offset = x_start;
 
 %% create LUT
-[ LUT, LUT_EvaluationPoints, LUT_StepSize ] = createLUT(a, b, x_start, y_start, NoE, signed, wordlength, fractionlength);
+[ LUT, LUT_EvaluationPoints, LUT_StepSize ] = createLUT(a, b, x_start, y_start, NoE, signed, wordlength, fractionlength, 1, 1);
 LUT_Entries = LUT;
 %% calculate outputs
 y_lin = x_lin;

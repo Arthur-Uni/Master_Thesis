@@ -1,5 +1,5 @@
 %% inputs
-x_fractionlength = 12;
+x_fractionlength = 16;
 x = -4:2^-x_fractionlength:4;
 
 NoE_1 = 4;

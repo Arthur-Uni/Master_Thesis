@@ -1,4 +1,4 @@
-function [LUT, LUT_EvaluationPoints, LUT_StepSize] = createLUT(a, b, x_start, y_start, NoE, signed, wordlength, fractionlength)
+function [LUT, LUT_EvaluationPoints, LUT_StepSize] = createLUT(a, b, x_start, y_start, NoE, signed, wordlength, fractionlength, hybrid_en, intermediate_en)
 %% parameters
 %   Inputs
 %       a: left interval boundary
@@ -15,11 +15,18 @@ LUT_StepSize = (b - a) / NoE;
 
 % LUT_EvaluationPoints = a: LUT_StepSize : b - LUT_StepSize;
 LUTx(1) = x_start;
-LUTy(1) = y_start;
-
+if(intermediate_en)
+    LUTy(1) = tanh(LUTx(1) + 0.5 *LUT_StepSize);
+else
+    LUTy(1) = y_start;
+end
 for i=2:NoE
     LUTx(i) = x_start + (i-1) * LUT_StepSize;
-    LUTy(i) = tanh(LUTx(i)+(LUT_StepSize/2));
+    if(hybrid_en)
+        LUTy(i) = tanh(LUTx(i) + 0.5 * LUT_StepSize);
+    else
+        LUTy(i) = tanh(LUTx(i));
+    end
 end
 
 EntriesFi = fi(LUTy, signed, wordlength, fractionlength);

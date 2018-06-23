@@ -23,9 +23,9 @@ y_start_3 = tanh(x_start_3);
 offset_3 = x_start_3;
 
 %% create LUTs
-[ LUT_1 LUT_EvaluationPoints_1, LUT_StepSize_1] = createLUT(a_1, b_1, x_start_1, y_start_1, NoE_1, signed, wordlength, fractionlength);
-[ LUT_2 LUT_EvaluationPoints_2, LUT_StepSize_2] = createLUT(a_2, b_2, x_start_2, y_start_2, NoE_2, signed, wordlength, fractionlength);
-[ LUT_3 LUT_EvaluationPoints_3, LUT_StepSize_3] = createLUT(a_3, b_3, x_start_3, y_start_3, NoE_3, signed, wordlength, fractionlength);
+[ LUT_1 LUT_EvaluationPoints_1, LUT_StepSize_1] = createLUT(a_1, b_1, x_start_1, y_start_1, NoE_1, signed, wordlength, fractionlength, 1, 0);
+[ LUT_2 LUT_EvaluationPoints_2, LUT_StepSize_2] = createLUT(a_2, b_2, x_start_2, y_start_2, NoE_2, signed, wordlength, fractionlength, 1, 1);
+[ LUT_3 LUT_EvaluationPoints_3, LUT_StepSize_3] = createLUT(a_3, b_3, x_start_3, y_start_3, NoE_3, signed, wordlength, fractionlength, 1, 1);
 
 %% create logical matrices for each segment
 % linear region

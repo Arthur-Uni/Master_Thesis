@@ -79,11 +79,11 @@ y_start_5 = tanh(x_start_5);
 offset_5 = x_start_5;
 
 %% create LUTs
-[ LUT_1 LUT_EvaluationPoints_1, LUT_StepSize_1] = createLUT(a_1, b_1, x_start_1, y_start_1, NoE_1, signed, wordlength, fractionlength);
-[ LUT_2 LUT_EvaluationPoints_2, LUT_StepSize_2] = createLUT(a_2, b_2, x_start_2, y_start_2, NoE_2, signed, wordlength, fractionlength);
-[ LUT_3 LUT_EvaluationPoints_3, LUT_StepSize_3] = createLUT(a_3, b_3, x_start_3, y_start_3, NoE_3, signed, wordlength, fractionlength);
-[ LUT_4 LUT_EvaluationPoints_4, LUT_StepSize_4] = createLUT(a_4, b_4, x_start_4, y_start_4, NoE_4, signed, wordlength, fractionlength);
-[ LUT_5 LUT_EvaluationPoints_5, LUT_StepSize_5] = createLUT(a_5, b_5, x_start_5, y_start_5, NoE_5, signed, wordlength, fractionlength);
+[ LUT_1 LUT_EvaluationPoints_1, LUT_StepSize_1] = createLUT(a_1, b_1, x_start_1, y_start_1, NoE_1, signed, wordlength, fractionlength, 1, 0);
+[ LUT_2 LUT_EvaluationPoints_2, LUT_StepSize_2] = createLUT(a_2, b_2, x_start_2, y_start_2, NoE_2, signed, wordlength, fractionlength, 1, 1);
+[ LUT_3 LUT_EvaluationPoints_3, LUT_StepSize_3] = createLUT(a_3, b_3, x_start_3, y_start_3, NoE_3, signed, wordlength, fractionlength, 1, 1);
+[ LUT_4 LUT_EvaluationPoints_4, LUT_StepSize_4] = createLUT(a_4, b_4, x_start_4, y_start_4, NoE_4, signed, wordlength, fractionlength, 1, 1);
+[ LUT_5 LUT_EvaluationPoints_5, LUT_StepSize_5] = createLUT(a_5, b_5, x_start_5, y_start_5, NoE_5, signed, wordlength, fractionlength, 1, 1);
 
 LUT_Entries = [ LUT_1 LUT_2 LUT_3 LUT_4 LUT_5 ];
 

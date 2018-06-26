@@ -18,7 +18,7 @@ dots = linspace(a,b,101);
 t = tanh(dots);
 
 % approximation
-y = tanh_PLA(dots);
+y = tanh_PLA_v2(dots);
 
 % error calculation
 abs_error = max(abs(t-y));
@@ -58,7 +58,7 @@ for wordlength = min_input : max_input
     x = fi(dots, true, wordlength, fractionlength);
     i = 1;
     for outputlength = min_output : max_output
-        y_fixed = tanh_shift_v2(x, outputlength);
+        y_fixed = tanh_shift_v3(abs(x), outputlength).*sign(dots);
         % error calculation
         max_abs_error(wordlength - temp, i) = max(abs(t-double(y_fixed)));
         mean_squ_error(wordlength - temp, i) = immse(t, double(y_fixed));

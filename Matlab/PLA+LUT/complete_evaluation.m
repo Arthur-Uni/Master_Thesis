@@ -4,7 +4,7 @@ close all;
 clc;
 
 %% inputs
-x_fractionlength = 12;
+x_fractionlength = 7;
 x = -6:2^-x_fractionlength:6;
 
 %% accurate tanh
@@ -104,7 +104,7 @@ hold on;
 grid on;
 s_MSE = scatter(N(:), MSE(:), 50, 'x', 'LineWidth', width);
 set(gca, 'FontSize', fontSize);
-xlabel('# number of LUT entries', 'FontSize', fontSize);
+xlabel('Number of LUT entries', 'FontSize', fontSize);
 ylabel('mean squared error', 'FontSize', fontSize);
 title('all possible points');
 
@@ -127,7 +127,7 @@ hold on;
 grid on;
 s_M = scatter(N(:), M(:), 50, 'x', 'LineWidth', width);
 set(gca, 'FontSize', fontSize);
-xlabel('# number of LUT entries', 'FontSize', fontSize);
+xlabel('Number of LUT entries', 'FontSize', fontSize);
 ylabel('maximum absolute error', 'FontSize', fontSize);
 title('all possible points');
 

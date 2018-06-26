@@ -1,4 +1,4 @@
-function [ c_poly ] = cheb_poly_coeffs( a, b, n)
+function [ c_poly, x_k, x_ks ] = cheb_poly_coeffs( a, b, n)
 %Chebyshev polynomial approximation of tanh(x)
 %%
 %  Parameters:

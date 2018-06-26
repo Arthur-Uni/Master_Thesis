@@ -1,5 +1,9 @@
 function [ y_fixed_point ] = tanh_shift_v3( x, wordlength )
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%problem with negative part at ceratin breakppoints -> not solved yet ->
+%use tanh_shift_v3(abs(x), wordlength) .* sign(x) to obtain correct
+%solution for all cases for now
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% get all negative values of x
 neg_logical = x < 0;
 x_neg = neg_logical .* x;

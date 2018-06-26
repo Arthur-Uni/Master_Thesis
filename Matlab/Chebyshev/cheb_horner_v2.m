@@ -1,4 +1,4 @@
-function [ y ] = cheb_horner_v2( x, a, b, n )
+function [ y, c, x_k, x_ks ] = cheb_horner_v2( x, a, b, n )
 %  Parameters:
 %
 %    Input, real a, b, the domain of definition.
@@ -18,7 +18,7 @@ function [ y ] = cheb_horner_v2( x, a, b, n )
 % transform x from interval [a,b] to [0,1]
 x_transform = (x-a) .* (1/(b-a));
 
-c = cheb_poly_coeffs(a,b,n);
+[c, x_k, x_ks] = cheb_poly_coeffs(a,b,n);
 
 k = length(x);
 l = length(c);

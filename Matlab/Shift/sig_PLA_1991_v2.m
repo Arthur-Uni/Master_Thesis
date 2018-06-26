@@ -1,4 +1,4 @@
-function [ y, y_fixed_point ] = sig_PLA_1991( x, wordlength )
+function [ y, y_fixed_point ] = sig_PLA_1991_v2( x, wordlength )
 
 % set global fimath settings
 globalfimath('OverflowAction','Saturate','RoundingMethod','Round')
@@ -88,7 +88,7 @@ if(~isempty(x_pos))
     
     x_pos_fractional = bitshift(x_pos_fractional, -2);
     
-    x_pos_fractional = bitset(x_pos_fractional, 32);
+    x_pos_fractional = bitset(x_pos_fractional, wordlength);
     
     for i=1:size(x_pos_fractional,2)
         y_pos_fixed_point(i) = bitshift(x_pos_fractional(i), -x_pos_integer(i));

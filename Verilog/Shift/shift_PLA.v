@@ -11,7 +11,7 @@ for negative inputs:
 
 for positive inputs:
    
-   output form: out =           0 . 1 0 x^-2 x^-3 ...
+   output form: out =           0 . 0 x^-2 x^-3 ...
                                  -> shifted right by the amount of the input integer part
                                  and fractional part is filled with ones
 */
@@ -84,7 +84,7 @@ for positive inputs:
    assign shift_result = { sign_bit, temp_shift_result[OUT_F-1:0] };  // integer bit restored
 /*
 if saturation bit is set and input is negative, saturate to -1
-else if saturation bit is set and inout is positive, saturate to ~1
+else if saturation bit is set and input is positive, saturate to ~1
 else out = shift_result
 */
    assign out = (saturation == 1'b1 && sign_bit == 1'b1) ? { sign_bit, {OUT_F{1'b0}} } : (saturation == 1'b1 && sign_bit == 1'b0) ? { sign_bit, {OUT_F{1'b1}} } : shift_result;

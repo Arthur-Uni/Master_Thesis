@@ -80,11 +80,6 @@ if(~isempty(x_pos))
     
     % remove first fractional bit
     x_pos_fractional = bitset(x_pos_fractional, wordlength, 0);
-    x_pos_fractional = bitshift(x_pos_fractional, 1);
-    
-    x_pos_fractional = bitshift(x_pos_fractional, -1);
-    
-    % x_pos_fractional = bitset(x_pos_fractional, wordlength);
     
     for i=1:size(x_pos_fractional,2)
         y_pos_fixed_point(i) = bitshift(x_pos_fractional(i), -x_pos_integer_temp(i));

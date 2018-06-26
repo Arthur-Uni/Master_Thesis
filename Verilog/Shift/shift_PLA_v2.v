@@ -67,6 +67,7 @@ for positive inputs:
    assign shift_amount_temp = (sign_bit == 1'b1) ? twos_complement << 1 : in << 1; // input * 2
    assign shift_amount = shift_amount_temp[W_IN-1 : (W_IN-IN_I)]; // take only integer bits
    
+   //a trick is used to use arithmetic shift for positive inputs, that's why the structure is {1, 0, fractional_part, additional} instead of {0, fractional_part, additional}
    assign temp = (sign_bit == 1'b1) ? { 1'b1, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL{1'b0}} } : { 1'b1, 1'b0, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL{1'b0}} };
    assign temp_shift_result = (sign_bit == 1'b0) ? temp >>> shift_amount : temp >> shift_amount; // >> -> binary shift ( no sign extension); >>> -> arithmetic shift (sign extension)
 

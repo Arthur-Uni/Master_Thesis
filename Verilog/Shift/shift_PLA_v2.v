@@ -34,7 +34,6 @@ for positive inputs:
 
    output      [ W_OUT-1:0 ]    out;
 
-   wire        [ IN_I-1:0 ]     integer_part;
    wire        [ IN_F-1:0 ]     fractional_part;
    wire signed [ OUT_F:0 ]      temp; // this is needed to obtain the correct form before the shifting
    wire                         sign_bit;
@@ -62,7 +61,6 @@ for positive inputs:
 
 // divide input into integer and fractional part and keep sign bit
    assign sign_bit = in[W_IN-1];
-   assign integer_part = in[W_IN-1:IN_F];
    assign fractional_part = in[IN_F-1:0];
 
 // perform shift operation

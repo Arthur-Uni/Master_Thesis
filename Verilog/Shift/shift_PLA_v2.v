@@ -60,18 +60,18 @@ for positive inputs:
       end
 
 // divide input into integer and fractional part and keep sign bit
-   assign sign_bit = in[W_IN-1];
-   assign fractional_part = in[IN_F-1:0];
+   assign sign_bit = reg_in[W_IN-1];
+   assign fractional_part = reg_in[IN_F-1:0];
 
 // perform shift operation
-   assign shift_amount_temp = (sign_bit == 1'b1) ? twos_complement << 1 : in << 1; // input * 2
+   assign shift_amount_temp = (sign_bit == 1'b1) ? twos_complement << 1 : reg_in << 1; // input * 2
    assign shift_amount = shift_amount_temp[W_IN-1 : (W_IN-IN_I)]; // take only integer bits
    
    //a trick is used to use arithmetic shift for positive inputs, that's why the structure is {1, 0, fractional_part, additional} instead of {0, fractional_part, additional}
    assign temp = (sign_bit == 1'b1) ? { 1'b1, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL{1'b0}} } : { 1'b1, 1'b0, fractional_part[IN_F-2:F_BITS], {F_ADDITIONAL{1'b0}} };
    assign temp_shift_result = (sign_bit == 1'b0) ? temp >>> shift_amount : temp >> shift_amount; // >> -> binary shift ( no sign extension); >>> -> arithmetic shift (sign extension)
 
-   assign twos_complement = (sign_bit == 1'b1) ? ~in + 1 : { {W_IN{1'b0}} };
+   assign twos_complement = (sign_bit == 1'b1) ? ~reg_in + 1 : { {W_IN{1'b0}} };
 
 // build output
    assign shift_result = { sign_bit, temp_shift_result[OUT_F-1:0] };  // integer bit restored

@@ -5,7 +5,7 @@ clc;
 
 %% inputs
 x_fractionlength = 12;
-x = -6:2^-x_fractionlength:6;
+x = -4:2^-x_fractionlength:4;
 
 %% divide input into segments
 x_lin_logical = (abs(x) <= 0.5);
@@ -23,7 +23,7 @@ x_LUT_logical = (temp1 .* temp2);
 a = 0.5;
 b = 2.5;
 
-NoE = 32;
+NoE = 64;
 
 signed = 0;
 wordlength = 8;
@@ -33,7 +33,7 @@ y_start = 0.5;
 offset = x_start;
 
 %% create LUT
-[ LUT, LUT_EvaluationPoints, LUT_StepSize ] = createLUT(a, b, x_start, y_start, NoE, signed, wordlength, fractionlength);
+[ LUT, LUT_EvaluationPoints, LUT_StepSize ] = createLUT(a, b, x_start, y_start, NoE, signed, wordlength, fractionlength, 1, 0);
 
 %% calculate outputs
 y_lin = x_lin;

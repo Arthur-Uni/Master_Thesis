@@ -174,22 +174,22 @@ for n=min_degree:max_degree
 %         figure(6)
 %         approx = plot(X, P_POT);
 %%        
-% % design complexity/area transistor count
-%         adder_output_bits = 2 * input_wordlength + coeff_wordlength + ...
-%             adder_out_widening;
-%         CA_adder_transistorcount = adder_output_bits * 28;  % 56 = transistor count for
-%                                                             % one full
-%                                                             % adder without
-%                                                             % optimizations
-%         l = input_wordlength;
-%         k = input_wordlength + coeff_wordlength;
-%         CA_Array_Multiplier_transistorcount = l * k * 6 + 12 * k + (k*l-k-l) * 28; 
+% design complexity/area transistor count
+        adder_output_bits = 2 * input_wordlength + coeff_wordlength + ...
+            adder_out_widening;
+        CA_adder_transistorcount = adder_output_bits * 28;  % 28 = transistor count for
+                                                            % one full
+                                                            % adder without
+                                                            % optimizations
+        l = input_wordlength;
+        k = input_wordlength + coeff_wordlength;
+        CA_Array_Multiplier_transistorcount = l * k * 6 + 12 * k + (k*l-k-l) * 28; 
 
 %% quadratic regression: y = beta2 * x^2 + beta1 * x + beta0
-        combined_wordlength = input_wordlength + coeff_wordlength;
-        beta2 = 0.017147623788177732140347586664575;
-        beta1 = 0.3410854832771987865669416351011;
-        beta0 = 5.5892904331629633674083379446529;
+%         combined_wordlength = input_wordlength + coeff_wordlength;
+%         beta2 = 0.017147623788177732140347586664575;
+%         beta1 = 0.3410854832771987865669416351011;
+%         beta0 = 5.5892904331629633674083379446529;
 %%
         abs_error = max(abs(Y_POT(:)-P_POT(:)));
         max_abs_error(n - temp, i) = abs_error;
@@ -197,8 +197,8 @@ for n=min_degree:max_degree
         Coeffs(n - temp, i) = (n+1)*S_POT;
         N(n - temp, i) = Coeffs(n - temp)*coeff_wordlength;
         % C(n - temp, i) = 2*n*(input_wordlength + coeff_wordlength);
-        % C(n - temp, i) = CA_adder_transistorcount + CA_Array_Multiplier_transistorcount;
-        C(n - temp, i) = n * (beta2 * combined_wordlength^2 + beta1 * combined_wordlength + beta0);
+        C(n - temp, i) = CA_adder_transistorcount + CA_Array_Multiplier_transistorcount;
+        % C(n - temp, i) = n * (beta2 * combined_wordlength^2 + beta1 * combined_wordlength + beta0);
         i = i+1;
     end
 end

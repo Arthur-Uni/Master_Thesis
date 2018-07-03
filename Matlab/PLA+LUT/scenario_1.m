@@ -1,21 +1,21 @@
 %% cleanup
-clear;
-close all;
-clc;
+% clear;
+% close all;
+% clc;
 
 %% inputs
 x_fractionlength = 12;
-x = -4:2^-x_fractionlength:4;
+x_1 = 0:2^-x_fractionlength:4.5;
 
 %% divide input into segments
-x_lin_logical = (abs(x) <= 0.5);
-x_lin = x_lin_logical .* x;
+x_lin_logical = (abs(x_1) <= 0.5);
+x_lin = x_lin_logical .* x_1;
 
-x_sat_logical = (abs(x) > 2.5);
+x_sat_logical = (abs(x_1) > 2.5);
 x_sat = x_sat_logical .* (1 - 2^-x_fractionlength);
 
-temp1 = abs(x) > 0.5;
-temp2 = abs(x) <= 2.5;
+temp1 = abs(x_1) > 0.5;
+temp2 = abs(x_1) <= 2.5;
 x_LUT_logical = (temp1 .* temp2);
 % x_LUT = x_LUT_logical .* x;
 
@@ -23,7 +23,7 @@ x_LUT_logical = (temp1 .* temp2);
 a = 0.5;
 b = 2.5;
 
-NoE = 64;
+NoE = 4;
 
 signed = 0;
 wordlength = 8;
@@ -37,23 +37,23 @@ offset = x_start;
 
 %% calculate outputs
 y_lin = x_lin;
-y_sat = abs(x_sat) .* sign(x);
-y_LUT = calculateLUTPLA(x, LUT, LUT_StepSize, 0, 0, a, b, offset) .* x_LUT_logical;
+y_sat = abs(x_sat) .* sign(x_1);
+y_LUT = calculateLUTPLA(x_1, LUT, LUT_StepSize, 0, 0, a, b, offset) .* x_LUT_logical;
 
 %% bring everything together
-y = (y_lin + y_sat + y_LUT);
+y_1 = (y_lin + y_sat + y_LUT);
 
 %% plot
 % parameters
 width = 2;
 fontSize = 14;
 
-figure(1)
-hold on;
-grid on;
-
-plot(x, tanh(x), 'LineWidth', width);
-plot(x, y, 'LineWidth', width);
-xlabel('wordlength', 'FontSize', fontSize);
-ylabel('error quotient', 'FontSize', fontSize);
-set(gca, 'FontSize', fontSize);
+% figure(1)
+% hold on;
+% grid on;
+% 
+% plot(x_1, tanh(x_1), 'LineWidth', width);
+% plot(x_1, y_1, 'LineWidth', width);
+% xlabel('wordlength', 'FontSize', fontSize);
+% ylabel('error quotient', 'FontSize', fontSize);
+% set(gca, 'FontSize', fontSize);

@@ -29,12 +29,12 @@ width = 1.5;
 fontSize = 16;
 
 min_input = 5;
-max_input = 16;
+max_input = 32;
 
 input_size = max_input - min_input + 1;
 
 min_output = 4;
-max_output = 16;
+max_output = 32;
 
 output_size = max_output - min_output + 1;
 
@@ -74,7 +74,7 @@ x_tick = min_output:max_output;
 one = ones(1,size(x_tick,2));
 
 % plot
-subplot(2,1,1);
+figure(10);
 grid on;
 hold on;
 plot(x_tick, one.*abs_error, '--', 'LineWidth', 2*width);
@@ -91,7 +91,7 @@ for iter=2:input_size+1
 end
 legend(Legend);
 
-subplot(2,1,2);
+figure(11);
 grid on;
 hold on;
 plot(x_tick, one.*msq_error, '--', 'LineWidth', 2*width);
@@ -150,7 +150,7 @@ s_C = scatter(C(:), M(:), 50, 'x', 'r', 'LineWidth', 1.75);
 set(gca, 'FontSize', fontSize);
 xlabel('wordlength', 'FontSize', fontSize);
 ylabel('maximum absolute error', 'FontSize', fontSize);
-title('pareto front');
+% title('pareto front');
 
 s_pareto_C = scatter(C_mod, M_mod, 75, 'o', 'filled', 'b', 'LineWidth', 2);
 legend('possible design points', 'pareto points');
@@ -161,8 +161,8 @@ grid on;
 s_C_mse = scatter(C(:), N(:), 50, 'x', 'r', 'LineWidth', 1.75);
 set(gca, 'FontSize', fontSize);
 xlabel('wordlength', 'FontSize', fontSize);
-ylabel('maximum absolute error', 'FontSize', fontSize);
-title('pareto front (MSE)');
+ylabel('mean squared error', 'FontSize', fontSize);
+% title('pareto front (MSE)');
 
 s_pareto_C_mse = scatter(C_mod_mse, N_mod_mse, 75, 'o', 'filled', 'b', 'LineWidth', 2);
 legend('possible design points', 'pareto points');

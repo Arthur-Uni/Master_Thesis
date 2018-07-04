@@ -5,10 +5,10 @@ clc;
 
 %% inputs
 x_fractionlength = 12;
-x = -4:2^-x_fractionlength:4;
+x = 0:2^-x_fractionlength:4;
 
 %% parameter
-NoE = 16;
+NoE = 8;
 
 %% calculation
 [y, LUT] = sc1(x, NoE, x_fractionlength);

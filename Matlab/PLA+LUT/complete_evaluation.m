@@ -92,8 +92,15 @@ fontSize = 14;
 
 P_MSE = my_pareto(MSE, N);
 Ones_MSE = P_MSE > 0;
+Ones_X = P_MSE == 0;
 N_pareto_MSE = Ones_MSE .* N;
 MSE_pareto = Ones_MSE .* MSE;
+
+N_X = Ones_X .* N;
+M_X = Ones_X .* MSE;
+
+N_X(N_X==0)=[];
+M_X(M_X==0)=[];
 
 N_pareto_MSE(N_pareto_MSE == 0) =[];
 MSE_pareto(MSE_pareto == 0) = [];
@@ -102,22 +109,29 @@ MSE_pareto(MSE_pareto == 0) = [];
 figure(1)
 hold on;
 grid on;
-s_MSE = scatter(N(:), MSE(:), 50, 'x', 'LineWidth', width);
+s_MSE = scatter(N(:), MSE(:), 50, 'o', 'filled', 'b', 'LineWidth', 1.5);
 set(gca, 'FontSize', fontSize);
-xlabel('Number of LUT entries', 'FontSize', fontSize);
-ylabel('mean squared error', 'FontSize', fontSize);
-title('all possible points');
+xlabel('number of table entries', 'FontSize', fontSize);
+ylabel('$e_{mse}$', 'FontSize', fontSize);
+%title('all possible points');
 
-s_pareto_MSE = scatter(N_pareto_MSE(:), MSE_pareto(:), 75, 'x', 'LineWidth', 2.5);
-title('pareto points for LUT');
-legend('possible design points', 'pareto points');
+s_pareto_MSE = scatter(N_X(:), M_X(:), 75, 'x', 'r', 'LineWidth', 1.75);
+%title('pareto points for LUT');
+%legend('possible design points', 'pareto points');
 
 % maximum absolute error
 
 P_M = my_pareto(M, N);
 Ones_M = P_M > 0;
+Ones_X = P_M == 0;
 N_pareto_M = Ones_M .* N;
 M_pareto = Ones_M .* M;
+
+N_X = Ones_X .* N;
+M_X = Ones_X .* M;
+
+N_X(N_X==0)=[];
+M_X(M_X==0)=[];
 
 N_pareto_M(N_pareto_M == 0) =[];
 M_pareto(M_pareto == 0) = [];
@@ -125,12 +139,12 @@ M_pareto(M_pareto == 0) = [];
 figure(2)
 hold on;
 grid on;
-s_M = scatter(N(:), M(:), 50, 'x', 'LineWidth', width);
+s_M = scatter(N(:), M(:), 50, 'o', 'filled', 'b', 'LineWidth', 1.5);
 set(gca, 'FontSize', fontSize);
-xlabel('Number of LUT entries', 'FontSize', fontSize);
-ylabel('maximum absolute error', 'FontSize', fontSize);
-title('all possible points');
+xlabel('number of table entries', 'FontSize', fontSize);
+ylabel('$e_{maxabs}$', 'FontSize', fontSize);
+%title('all possible points');
 
-s_pareto_M = scatter(N_pareto_M(:), M_pareto(:), 75, 'x', 'LineWidth', 2.5);
-title('pareto points for LUT');
-legend('possible design points', 'pareto points');
+s_pareto_M = scatter(N_X(:), M_X(:), 75, 'x', 'r', 'LineWidth', 1.75);
+%title('pareto points for LUT');
+%legend('possible design points', 'pareto points');

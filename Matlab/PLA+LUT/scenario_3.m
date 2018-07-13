@@ -56,7 +56,7 @@ b_1 = 0.5;
 x_start_1 = 0.25;
 y_start_1 = 0.25;
 offset_1 = x_start_1;
-NoE_1 = 2;
+NoE_1 = 16;
 
 % 2nd segment
 a_2 = 0.5;
@@ -64,7 +64,7 @@ b_2 = 1;
 x_start_2 = 0.5;
 y_start_2 = tanh(x_start_2);
 offset_2 = x_start_2;
-NoE_2 = 2;
+NoE_2 = 32;
 
 % 3rd segment
 a_3 = 1;
@@ -72,7 +72,7 @@ b_3 = 2;
 x_start_3 = 1;
 y_start_3 = tanh(x_start_3);
 offset_3 = x_start_3;
-NoE_3 = 4;
+NoE_3 = 64;
 
 % 4th segment
 a_4 = 2;
@@ -80,7 +80,7 @@ b_4 = 3;
 x_start_4 = 2;
 y_start_4 = tanh(x_start_4);
 offset_4 = x_start_4;
-NoE_4 = 4;
+NoE_4 = 16;
 
 % 5th segment
 a_5 = 3;
@@ -91,11 +91,11 @@ offset_5 = x_start_5;
 NoE_5 = 2;
 
 %% create LUTs
-[ LUT_1 LUT_EvaluationPoints_1, LUT_StepSize_1] = createLUT(a_1, b_1, x_start_1, y_start_1, NoE_1, signed, wordlength, fractionlength, 1, 0);
-[ LUT_2 LUT_EvaluationPoints_2, LUT_StepSize_2] = createLUT(a_2, b_2, x_start_2, y_start_2, NoE_2, signed, wordlength, fractionlength, 1, 1);
-[ LUT_3 LUT_EvaluationPoints_3, LUT_StepSize_3] = createLUT(a_3, b_3, x_start_3, y_start_3, NoE_3, signed, wordlength, fractionlength, 1, 1);
-[ LUT_4 LUT_EvaluationPoints_4, LUT_StepSize_4] = createLUT(a_4, b_4, x_start_4, y_start_4, NoE_4, signed, wordlength, fractionlength, 1, 1);
-[ LUT_5 LUT_EvaluationPoints_5, LUT_StepSize_5] = createLUT(a_5, b_5, x_start_5, y_start_5, NoE_5, signed, wordlength, fractionlength, 1, 1);
+[ LUT_1 LUT_EvaluationPoints_1, LUT_StepSize_1] = createLUT_FI(a_1, b_1, x_start_1, y_start_1, NoE_1, signed, wordlength, fractionlength, 1, 0);
+[ LUT_2 LUT_EvaluationPoints_2, LUT_StepSize_2] = createLUT_FI(a_2, b_2, x_start_2, y_start_2, NoE_2, signed, wordlength, fractionlength, 1, 1);
+[ LUT_3 LUT_EvaluationPoints_3, LUT_StepSize_3] = createLUT_FI(a_3, b_3, x_start_3, y_start_3, NoE_3, signed, wordlength, fractionlength, 1, 1);
+[ LUT_4 LUT_EvaluationPoints_4, LUT_StepSize_4] = createLUT_FI(a_4, b_4, x_start_4, y_start_4, NoE_4, signed, wordlength, fractionlength, 1, 1);
+[ LUT_5 LUT_EvaluationPoints_5, LUT_StepSize_5] = createLUT_FI(a_5, b_5, x_start_5, y_start_5, NoE_5, signed, wordlength, fractionlength, 1, 1);
 
 %% calculate outputs
 y_lin = abs(x_lin) .* sign(x_3);

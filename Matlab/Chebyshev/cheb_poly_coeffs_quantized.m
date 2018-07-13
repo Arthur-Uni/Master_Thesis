@@ -61,6 +61,6 @@ c_poly_temp = double(coeffs(p_sym, 'All'));
 
 %quantization
 c_poly = fi(c_poly_temp, true, wordlength, fract); %format: [cn,...,c0]
-
+c_poly = double(c_poly);
 end
 

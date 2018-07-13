@@ -35,7 +35,7 @@ covar = sum((t-t_mean).*(r-r_mean))/(size(r,1));
 rho = covar/(std(r).*std(t));
 %% plot
 
-width = 3;
+width = 2;
 fontSize = 16;
 
 figure(1)
@@ -44,17 +44,19 @@ grid on;
 set(gca, 'FontSize', fontSize);
 xlabel('normalized transistor count', 'FontSize', fontSize);
 ylabel('normalized LUT+DSP count', 'FontSize', fontSize);
-title('correlation');
+% title('correlation');
 txt = strcat({'correlation coefficient:'},{' '} ,{num2str(rho)});
-text(0.8, 0.05, txt, 'FontSize', fontSize, 'Color','blue');
-scatter(t,r, 75, 'x', 'LineWidth', width);
+text(0.8, 0.05, txt, 'FontSize', fontSize, 'Color','k');
+scatter(t,r, 25, 'filled');
+x = linspace(0,1,101);
+plot(x, rho.*x + 0.095, 'LineWidth', width);
 
-figure(2)
-hold on;
-grid on;
-scatter(x,t, 75, 'x', 'LineWidth', width);
-scatter(x,r, 75, 'x', 'LineWidth', width);
-set(gca, 'FontSize', fontSize);
-xlabel('combined wordlength', 'FontSize', fontSize);
-ylabel('normalized values', 'FontSize', fontSize);
-legend('normalized transistor count','normalized LUT+DSP count', 'location', 'southeast');
+% figure(2)
+% hold on;
+% grid on;
+% scatter(x,t, 75, 'x', 'LineWidth', width);
+% scatter(x,r, 75, 'x', 'LineWidth', width);
+% set(gca, 'FontSize', fontSize);
+% xlabel('combined wordlength', 'FontSize', fontSize);
+% ylabel('normalized values', 'FontSize', fontSize);
+% legend('normalized transistor count','normalized LUT+DSP count', 'location', 'southeast');

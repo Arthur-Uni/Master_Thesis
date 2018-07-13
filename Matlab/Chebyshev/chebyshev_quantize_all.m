@@ -6,20 +6,23 @@
 %%
 %cleanup
 clear;
-% clc;
+clc;
 close all;
 
 %%
 %initialization parameters
 
 % set global fimath settings
-globalfimath('OverflowAction','Saturate','RoundingMethod','Round')
+globalfimath('OverflowAction','Saturate','RoundingMethod','Round');
+
+% set default interpreter
+set(0,'defaulttextInterpreter','latex');
 
 %degree of polynomial
 %n = 3;
 
 %number of segments
-S = 1;      % needs to be a power of two such that interval [a,b] can be
+S = 2;      % needs to be a power of two such that interval [a,b] can be
             % divided into integer powers of two
 S_POT = log2(S)+1;
 
@@ -113,7 +116,7 @@ end
 
 %%
 %parameters
-max_degree = 9;
+max_degree = 8;
 min_degree = 1;
 degree_size = max_degree - min_degree +1;       %number of degree steps
 
@@ -175,21 +178,21 @@ for n=min_degree:max_degree
 %         approx = plot(X, P_POT);
 %%        
 % design complexity/area transistor count
-        adder_output_bits = 2 * input_wordlength + coeff_wordlength + ...
-            adder_out_widening;
-        CA_adder_transistorcount = adder_output_bits * 28;  % 28 = transistor count for
-                                                            % one full
-                                                            % adder without
-                                                            % optimizations
-        l = input_wordlength;
-        k = input_wordlength + coeff_wordlength;
-        CA_Array_Multiplier_transistorcount = l * k * 6 + 12 * k + (k*l-k-l) * 28; 
+%         adder_output_bits = 2 * input_wordlength + coeff_wordlength + ...
+%             adder_out_widening;
+%         CA_adder_transistorcount = adder_output_bits * 28;  % 28 = transistor count for
+%                                                             % one full
+%                                                             % adder without
+%                                                             % optimizations
+%         l = input_wordlength;
+%         k = input_wordlength + coeff_wordlength;
+%         CA_Array_Multiplier_transistorcount = l * k * 6 + 12 * k + (k*l-k-l) * 28; 
 
 %% quadratic regression: y = beta2 * x^2 + beta1 * x + beta0
-%         combined_wordlength = input_wordlength + coeff_wordlength;
-%         beta2 = 0.017147623788177732140347586664575;
-%         beta1 = 0.3410854832771987865669416351011;
-%         beta0 = 5.5892904331629633674083379446529;
+        combined_wordlength = input_wordlength + coeff_wordlength;
+        beta2 = 0.017147623788177732140347586664575;
+        beta1 = 0.3410854832771987865669416351011;
+        beta0 = 5.5892904331629633674083379446529;
 %%
         abs_error = max(abs(Y_POT(:)-P_POT(:)));
         max_abs_error(n - temp, i) = abs_error;
@@ -197,71 +200,73 @@ for n=min_degree:max_degree
         Coeffs(n - temp, i) = (n+1)*S_POT;
         N(n - temp, i) = Coeffs(n - temp)*coeff_wordlength;
         % C(n - temp, i) = 2*n*(input_wordlength + coeff_wordlength);
-        C(n - temp, i) = CA_adder_transistorcount + CA_Array_Multiplier_transistorcount;
-        % C(n - temp, i) = n * (beta2 * combined_wordlength^2 + beta1 * combined_wordlength + beta0);
+        % C(n - temp, i) = CA_adder_transistorcount + CA_Array_Multiplier_transistorcount;
+        C(n - temp, i) = n * (beta2 * combined_wordlength^2 + beta1 * combined_wordlength + beta0);
         i = i+1;
     end
 end
 
 M = max_abs_error;
-%%
-%plots
-
-%2D
-figure(1)
-
-subplot(2,1,1);
-p1 = plot(N, max_abs_error, 'LineWidth', width);
-xlabel('# of memory bits', 'FontSize', fontSize);
-ylabel('max abs error', 'FontSize', fontSize);
-hold on;
-grid on;
-
-Legend = cell(word_size,1);
-for iter=1:word_size
-    Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
-end
-legend(Legend);
-
-subplot(2,1,2);
-p2 = plot(N, mean_squ_error, 'LineWidth', width);
-xlabel('# of memory bits', 'FontSize', fontSize);
-ylabel('mean squared error', 'FontSize', fontSize);
-hold on;
-grid on;
-
-Legend = cell(word_size,1);
-for iter=1:word_size
-    Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
-end
-legend(Legend);
-
-figure(2);
-subplot(2,1,1);
-p3 = plot(C, max_abs_error, 'LineWidth', width);
-xlabel('transistor count', 'FontSize', fontSize);
-ylabel('max abs error', 'FontSize', fontSize);
-hold on;
-grid on;
-
-Legend = cell(word_size,1);
-for iter=1:word_size
-    Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
-end
-legend(Legend);
-
-subplot(2,1,2);
-p4 = plot(C, mean_squ_error, 'LineWidth', width);
-xlabel('transistor count', 'FontSize', fontSize);
-ylabel('mean squared error', 'FontSize', fontSize);
-hold on;
-grid on;
-
-Legend = cell(word_size,1);
-for iter=1:word_size
-    Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
-end
-legend(Legend);
+% %%
+% %plots
+% 
+% %2D
+% figure(1)
+% 
+% % subplot(2,1,1);
+% p1 = plot(N, max_abs_error, 'LineWidth', width);
+% xlabel('# of memory bits', 'FontSize', fontSize);
+% ylabel('max abs error', 'FontSize', fontSize);
+% hold on;
+% grid on;
+% 
+% Legend = cell(word_size,1);
+% for iter=1:word_size
+%     Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
+% end
+% legend(Legend);
+% 
+% figure(2)
+% % subplot(2,1,2);
+% p2 = plot(N, mean_squ_error, 'LineWidth', width);
+% xlabel('# of memory bits', 'FontSize', fontSize);
+% ylabel('mean squared error', 'FontSize', fontSize);
+% hold on;
+% grid on;
+% 
+% Legend = cell(word_size,1);
+% for iter=1:word_size
+%     Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
+% end
+% legend(Legend);
+% 
+% figure(3);
+% %subplot(2,1,1);
+% p3 = plot(C, max_abs_error, 'LineWidth', width);
+% xlabel('transistor count', 'FontSize', fontSize);
+% ylabel('max abs error', 'FontSize', fontSize);
+% hold on;
+% grid on;
+% 
+% Legend = cell(word_size,1);
+% for iter=1:word_size
+%     Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
+% end
+% legend(Legend);
+% 
+% figure(4)
+% % subplot(2,1,2);
+% p4 = plot(C, mean_squ_error, 'LineWidth', width);
+% xlabel('transistor count', 'FontSize', fontSize);
+% ylabel('mean squared error', 'FontSize', fontSize);
+% hold on;
+% grid on;
+% 
+% Legend = cell(word_size,1);
+% for iter=1:word_size
+%     Legend{iter}=strcat('number of bits: ', num2str(min_word+(2*iter-2)));
+% end
+% legend(Legend);
 
 %%
 % best_abs_error = zeros(degree_size,1);
@@ -292,18 +297,34 @@ legend(Legend);
 
 % 3D
 
-% figure(1)
-% s = surf(N,min_degree:max_degree, max_abs_error, log(max_abs_error));
-% xlabel('memory utilization in number of bits');
-% ylabel('computational effort in degree of polynomial');
-% zlabel('max absolute error');
+% figure(12)
+% s = surf(N,C, max_abs_error, log(max_abs_error));
+% xlabel('$M$');
+% ylabel('$C$');
+% zlabel('$e_{maxabs}$');
+% set(gca, 'FontSize', 16);
 
-%%
-% pareto optimization
-% M = max_abs_error;
+% %%
+% % pareto optimization
+M = max_abs_error;
 % 
 P_C = cheb_pareto_v2(M, C);
 P_N = cheb_pareto_v2(M, N);
+
+Ones_XC = P_C == 0;
+Ones_XN = P_N == 0;
+
+N_X = Ones_XN .* N;
+MN_X = Ones_XN .* M;
+
+N_X(N_X==0)=[];
+MN_X(MN_X==0)=[];
+
+C_X = Ones_XC .* C;
+MC_X = Ones_XC .* M;
+
+C_X(C_X==0)=[];
+MC_X(MC_X==0)=[];
 
 Ones_C = P_C>0;
 Ones_N = P_N>0;
@@ -318,28 +339,28 @@ M_pareto_N(M_pareto_N==0) = [];
 N_pareto(N_pareto==0) = [];
 C_pareto(C_pareto==0) = [];
 
-figure(3)
+figure(5)
 hold on;
 grid on;
-s_C = scatter(C(:), M(:), 50, 'x', 'LineWidth', 2.5);
+s_C = scatter(C(:), M(:), 50, 'filled', 'LineWidth', 1.5);
 set(gca, 'FontSize', fontSize);
-xlabel('transistor count', 'FontSize', fontSize);
-ylabel('maximum absolute error', 'FontSize', fontSize);
-title('all points for computational effort');
+xlabel('$C$', 'FontSize', fontSize);
+ylabel('$e_{maxabs}$', 'FontSize', fontSize);
+%title('all points for computational effort');
 
-s_pareto_C = scatter(C_pareto, M_pareto_C, 75, 'x', 'LineWidth', 2.5);
-title('pareto front for transistor count');
-legend('possible design points', 'pareto points');
+s_pareto_C = scatter(C_X, MC_X, 75, 'x', 'LineWidth', 1);
+%title('pareto front for transistor count');
+%legend('possible design points', 'pareto points');
 
-figure(4)
+figure(6)
 hold on;
 grid on;
-s_N = scatter(N(:), M(:), 50, 'x', 'LineWidth', 2.5);
+s_N = scatter(N(:), M(:), 50, 'filled', 'LineWidth', 1.5);
 set(gca, 'FontSize', fontSize);
-xlabel('memory bits', 'FontSize', fontSize);
-ylabel('maximum absolute error', 'FontSize', fontSize);
-title('all points for memory utilization');
+xlabel('$M$', 'FontSize', fontSize);
+ylabel('$e_{maxabs}$', 'FontSize', fontSize);
+%title('all points for memory utilization');
 
-s_pareto_N = scatter(N_pareto, M_pareto_N, 75, 'x', 'LineWidth', 2.5);
-title('pareto front for memory utilization');
-legend('possible design points', 'pareto points');
+s_pareto_N = scatter(N_X, MN_X, 75, 'x', 'LineWidth', 1);
+%title('pareto front for memory utilization');
+%legend('possible design points', 'pareto points');

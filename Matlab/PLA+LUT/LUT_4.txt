@@ -1,0 +1,5 @@
+input.bin      LUT.bin      
+7'b0000010 : data_out_abs[6:0] = 7'b1000000;  
+7'b0000011 : data_out_abs[6:0] = 7'b1101100;  
+7'b0000100 : data_out_abs[6:0] = 7'b1111000;  
+7'b0000101 : data_out_abs[6:0] = 7'b1111101;  

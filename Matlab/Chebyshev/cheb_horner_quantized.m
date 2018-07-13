@@ -21,7 +21,7 @@ function [ y ] = cheb_horner_quantized(S, a, b, n, pts, coeff_wordlength, coeff_
 % evaluate polynomial approximation at [0,1]
 dots = linspace(0,1, pts);
 dots = fi(dots, true, input_wordlength,input_fractionlength);
-
+dots = double(dots);
 horner_wordlength = 2 * input_wordlength + coeff_wordlength + ceil(log2(n));
 horner_fractionlength = horner_setup(S,n, horner_wordlength);
 
@@ -37,7 +37,7 @@ l = length(c_q);
 temp = ones(1,k);
 temp = temp .* c_q(1);
 temp = fi(temp, true, horner_wordlength, horner_fractionlength);
-
+temp = double(temp);
 for i=2:l
     temp = temp.*dots + c_q(i);
     % debugging purposes
@@ -49,13 +49,14 @@ for i=2:l
     % quantize temporary result so that wordlength of multiply and add
     % operation does not grow indefinitely
     temp = fi(temp, true, horner_wordlength, horner_fractionlength);
+    temp = double(temp);
     %temp = fi(temp, true, 32, 31);
 end
 
 %%
 % quantize the final result to have an output of wordlength bits
 temp = fi(temp, 1, input_wordlength, input_fractionlength);
-
+temp = double(temp);
 y = temp;
 
 end

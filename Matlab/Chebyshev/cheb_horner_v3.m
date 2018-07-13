@@ -23,9 +23,9 @@ x_transform = (x-a) .* (1/(b-a));
 k = length(x);
 l = length(c);
 
-temp = ones(k,1);
+temp = ones(1,k);
 
-temp(:) = c(1);
+temp = temp .* c(1);
 
 for i=2:l
     temp = temp.*x_transform + c(i);

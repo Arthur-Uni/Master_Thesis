@@ -1,4 +1,4 @@
-function [ c_poly ] = cheb_poly_coeffs( a, b, n, f_handle)
+function [ c_poly, ma, mi ] = de_cheb_poly_coeffs( a, b, n, f_handle)
 %Chebyshev polynomial approximation of tanh(x)
 %%
 %  Parameters:
@@ -61,7 +61,8 @@ p_sym = expand(p_sym);
 %h = horner(p_sym);
 
 c_poly = double(coeffs(p_sym, 'All'));
-
+ma = vpa(max(c_poly));
+mi = vpa(min(c_poly));
 end
 
 

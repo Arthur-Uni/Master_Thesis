@@ -1,15 +1,21 @@
 module chebyshev_computation_v2(clock, resetn, data_in, coeff_in, data_out);
 
 // ###################################
-// # Module: computation module of chebyshev 
-// # 			 polynomial approximation calculating
-// #			 the chebyshev polynomial sequentially
+// # Module: - computation module of chebyshev 
+// # 			   polynomial approximation calculating
+// #			   the chebyshev polynomial sequentially
+// #         - it is assumed, that the input value data_in is in the range of [0,1] due to the prior
+// #           investigation in Matlab
+// #         - the number representation for the coefficients depends on the degree of the polynomial to approximate
+// #           and the number of segments used for the approximation (the correct fixed point format needs to be derived from this)
+// #         - the full output is given by this module -> the actual output given to the network for further calculations
+// #           should be quantized to reduce the word length (Matlab investigation was done with input word length = output word length)
 // ###################################
 
    parameter WL;  //input word length
    parameter CL;  //coefficient length
    
-   // WIDENING = ceil(ld(degree of polynomial))
+   // WIDENING = ceil(ld(degree of polynomial)) -> bit widening for the adder output
    parameter WIDENING;
    
    localparam MULT_OUT = 2*WL + CL;

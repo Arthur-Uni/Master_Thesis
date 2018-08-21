@@ -1,5 +1,8 @@
 module shift_PLA_tb_v2();
 
+// ###################################
+// # Module: - testbench for shift_PLA_v2.v
+
    localparam W_IN = 10;      // input wordlength
    localparam W_OUT = 10;     // output wordlength
    localparam IN_I = 4;      // # number of input integer bits

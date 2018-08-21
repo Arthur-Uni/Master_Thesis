@@ -1,5 +1,9 @@
 module hybrid(clock, resetn, in, out);
 
+// THIS MODULE IS NOT WORKING PROPERLY AT THE MOMENT
+// - there seems to be an issue with the correct timing between choosing which output is the correct one (PLA or LUT)
+// - evaluation of this module was done using Jan Richter Brockmanns activation function module and varying the LUT table size
+
    parameter W_IN;      // input wordlength
    parameter W_OUT = 9;     // output wordlength
    parameter IN_I;      // # number of input integer bits

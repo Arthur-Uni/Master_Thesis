@@ -97,12 +97,12 @@ else
 end
 %%                                            
 for n=min_degree:max_degree
-   coeff_wordlength = coeffs_setup(S,n); 
-   coeff_fractionlength = coeffs_setup_fract( S, n, coeff_wordlength );
+   coeff_wordlength = de_coeffs_setup(S,n); 
+   coeff_fractionlength = de_coeffs_setup_fract( S, n, coeff_wordlength );
    for k=1:S_POT
 %           c = cheb_poly_coeffs_quantized(  AB_POT(k,1), AB_POT(k,2), n, ...
 %               coeff_wordlength, coeff_fractionlength, f );
-          c = cheb_poly_coeffs(AB_POT(k,1), AB_POT(k,2), n, f);
+          c = de_cheb_poly_coeffs(AB_POT(k,1), AB_POT(k,2), n, f);
           P_POT(k,1:pts) = cheb_horner_v3(X(k,1:end), AB_POT(k,1), AB_POT(k,2), c);
    end
    abs_error = max(abs(Y_POT(:)-P_POT(:)));
